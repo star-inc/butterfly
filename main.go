@@ -9,12 +9,17 @@ The software licensed under Mozilla Public License Version 2.0
 package main
 
 import (
-	"fmt"
-
 	"./butterfly"
 )
 
+type starstartDataStruct struct {
+	id          int
+	uri         string
+	description string
+	content     string
+}
+
 func main() {
-	handle := butterfly.NewSolrClient()
-	fmt.Println(handle.Query("*"))
+	collyHandle := butterfly.NewCollyClient("")
+	collyHandle.Fetch("https://starinc.xyz")
 }

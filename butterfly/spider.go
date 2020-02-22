@@ -9,23 +9,37 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 import (
+	"fmt"
+	"net/url"
+	"strings"
+
 	"github.com/gocolly/colly"
+	strip "github.com/grokify/html-strip-tags-go"
 )
 
 // CollyHandle :
 type CollyHandle struct {
 	Client    *colly.Collector
 	UserAgent string
+	Content   string
+}
+
+func removeSyntaxs(rawString string) string {
+	rawString = strings.ReplaceAll(rawString, " ", "")
+	rawString = strings.ReplaceAll(rawString, "\t", "")
+	rawString = strings.ReplaceAll(rawString, "\n", "")
+	return rawString
 }
 
 // NewCollyClient :
-func NewCollyClient(userAgent string) {
+func NewCollyClient(userAgent string) *CollyHandle {
 	handle := new(CollyHandle)
 	handle.setUserAgent(userAgent)
 	client := colly.NewCollector(
 		colly.UserAgent(handle.UserAgent),
 	)
 	handle.Client = client
+	return handle
 }
 
 func (handle *CollyHandle) setUserAgent(userAgent string) {
@@ -34,4 +48,20 @@ func (handle *CollyHandle) setUserAgent(userAgent string) {
 	} else {
 		handle.UserAgent = userAgent
 	}
+}
+
+// Fetch :
+func (handle *CollyHandle) Fetch(uri string) {
+	url, _ := url.Parse(uri)
+	handle.Client.AllowedDomains = []string{url.Host}
+	handle.Client.OnHTML("div", func(e *colly.HTMLElement) {
+		removeSyntaxs(strip.StripTags(e.Text))
+	})
+	handle.Client.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		e.Request.Visit(e.Attr("href"))
+	})
+	handle.Client.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL)
+	})
+	handle.Client.Visit(uri)
 }
