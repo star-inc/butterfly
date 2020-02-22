@@ -17,7 +17,6 @@ import (
 
 // VioletDataStruct : Data structure for Violet
 type VioletDataStruct struct {
-	ID          string `json:"id"`
 	Title       string `json:"title"`
 	URI         string `json:"uri"`
 	Description string `json:"description"`

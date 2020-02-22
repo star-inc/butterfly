@@ -11,7 +11,6 @@ package butterfly
 import (
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -64,7 +63,6 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		data.Description = removeSyntaxs(strip.StripTags(e.Text))
 	})
 	handle.Client.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		data.ID = strconv.Itoa(e.Index)
 		data.URI = e.Attr("href")
 		e.Request.Visit(e.Attr("href"))
 	})
