@@ -1,0 +1,4 @@
+{
+    "solr_uri": "http://localhost:8983/solr",
+    "collection": "violet"
+}
