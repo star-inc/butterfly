@@ -10,7 +10,8 @@ The web crawler base on Apache Solr for StarStart!
 
 Follow to execute these commands
 
-    go get -u github.com/vanng822/go-solr/solr
+    go get -u github.com/grokify/html-strip-tags-go
+    go get -u github.com/supersonictw/butterfly-solr/solr
     go get -u github.com/gocolly/colly/...
 
 > (c) 2020 Star Inc.

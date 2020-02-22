@@ -11,6 +11,7 @@ package butterfly
 import (
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -51,17 +52,25 @@ func (handle *CollyHandle) setUserAgent(userAgent string) {
 }
 
 // Fetch :
-func (handle *CollyHandle) Fetch(uri string) {
+func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
+	data := new(VioletDataStruct)
 	url, _ := url.Parse(uri)
+	//handle.Client.Async = true
 	handle.Client.AllowedDomains = []string{url.Host}
+	handle.Client.OnHTML("title", func(e *colly.HTMLElement) {
+		data.Title = e.Text
+	})
 	handle.Client.OnHTML("div", func(e *colly.HTMLElement) {
-		removeSyntaxs(strip.StripTags(e.Text))
+		data.Description = removeSyntaxs(strip.StripTags(e.Text))
 	})
 	handle.Client.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		data.ID = strconv.Itoa(e.Index)
+		data.URI = e.Attr("href")
 		e.Request.Visit(e.Attr("href"))
 	})
 	handle.Client.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL)
+		solrHandle.Update(data)
 	})
 	handle.Client.Visit(uri)
 }

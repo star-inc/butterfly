@@ -13,7 +13,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/vanng822/go-solr/solr"
+	"github.com/supersonictw/butterfly-solr/solr"
 )
 
 // SolrHandle :
@@ -55,4 +55,11 @@ func (handle *SolrHandle) Query(request string) *solr.Collection {
 	response := handle.Client.Search(query)
 	output, _ := response.Result(nil)
 	return output.Results
+}
+
+// Update :
+func (handle *SolrHandle) Update(data *VioletDataStruct) {
+	_, err := handle.Client.UpdateDoc(data)
+	DeBug("Solr Update", err)
+	handle.Client.Commit()
 }

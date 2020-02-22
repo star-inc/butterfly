@@ -12,14 +12,8 @@ import (
 	"./butterfly"
 )
 
-type starstartDataStruct struct {
-	id          int
-	uri         string
-	description string
-	content     string
-}
-
 func main() {
 	collyHandle := butterfly.NewCollyClient("")
-	collyHandle.Fetch("https://starinc.xyz")
+	solrHandle := butterfly.NewSolrClient()
+	collyHandle.Fetch("https://starinc.xyz", solrHandle)
 }
