@@ -4,6 +4,8 @@
 
 The web crawler base on Apache Solr for StarStart!
 
+![logo](logo.svg)
+
 ## Developmet Environment
 
 Follow to execute these commands
