@@ -1,8 +1,10 @@
 /*
-StarStart! - Spider
-	
-LICENSE: AGPL 3.0
-Copyright(c) 2019 Star Inc. All Rights Reserved.
+Butterfly
+===
+The web crawler base on Apache Solr for StarStart!.
+
+Copyright(c) 2020 Star Inc. All Rights Reserved.
+The software licensed under Mozilla Public License Version 2.0
 */
 package main
 
@@ -10,6 +12,6 @@ import (
 	"fmt"
 )
 
-func main(){
-	fmt.Print("StarStart! Spider - Star Inc.")
+func main() {
+	fmt.Print("Copyright(c) 2020 Star Inc. All Rights Reserved.")
 }
