@@ -6,7 +6,9 @@ The web crawler base on Apache Solr for StarStart!
 
 ## Developmet Environment
 
-Follow to execute these command
+Follow to execute these commands
 
     go get github.com/vanng822/go-solr/solr
     go get -u github.com/gocolly/colly/...
+
+> (c) 2020 Star Inc.
