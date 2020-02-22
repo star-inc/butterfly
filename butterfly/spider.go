@@ -54,7 +54,7 @@ func (handle *CollyHandle) setUserAgent(userAgent string) {
 func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 	data := new(VioletDataStruct)
 	url, _ := url.Parse(uri)
-	handle.Client.Async = true
+	colly.Async(true)
 	handle.Client.AllowedDomains = []string{url.Host}
 	handle.Client.OnHTML("title", func(e *colly.HTMLElement) {
 		data.Title = e.Text
@@ -71,4 +71,5 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		solrHandle.Update(data)
 	})
 	handle.Client.Visit(uri)
+	handle.Client.Wait()
 }

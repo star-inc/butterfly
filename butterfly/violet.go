@@ -8,26 +8,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 package butterfly
 
-import (
-	"io/ioutil"
-	"net/http"
-)
-
 // Violet : The default schema for StarStart! Service
 
 // VioletDataStruct : Data structure for Violet
 type VioletDataStruct struct {
+	ID          string `json:"id"`
 	Title       string `json:"title"`
 	URI         string `json:"uri"`
 	Description string `json:"description"`
 	Content     string `json:"content"`
-}
-
-func VioletHttpGet(url string) string {
-	resp, err := http.Get(url)
-	DeBug("GetHTTP", err)
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	DeBug("ReadHTML", err)
-	return string(body)
 }

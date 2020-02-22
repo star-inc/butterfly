@@ -9,11 +9,18 @@ The software licensed under Mozilla Public License Version 2.0
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"./butterfly"
 )
 
 func main() {
-	collyHandle := butterfly.NewCollyClient("")
 	solrHandle := butterfly.NewSolrClient()
-	collyHandle.Fetch("https://starinc.xyz", solrHandle)
+	collyHandle := butterfly.NewCollyClient("")
+	if len(os.Args) == 2 {
+		collyHandle.Fetch(os.Args[1], solrHandle)
+	} else {
+		fmt.Printf("Usage: %s <URI>\n", os.Args[0])
+	}
 }
