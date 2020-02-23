@@ -17,14 +17,13 @@ import (
 	"github.com/gocolly/colly"
 )
 
-// CollyHandle :
+// CollyHandle : Define CollyHandle Class
 type CollyHandle struct {
 	Client    *colly.Collector
 	UserAgent string
-	Content   string
 }
 
-// NewCollyClient :
+// NewCollyClient : Create new colly collection
 func NewCollyClient(userAgent string) *CollyHandle {
 	handle := new(CollyHandle)
 	handle.setUserAgent(userAgent)
@@ -43,7 +42,7 @@ func (handle *CollyHandle) setUserAgent(userAgent string) {
 	}
 }
 
-// Fetch :
+// Fetch : Capture web pages on Internet and submit to Solr
 func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 	data := new(VioletDataStruct)
 	url, _ := url.Parse(uri)
@@ -54,6 +53,7 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		reader := strings.NewReader(e.Text)
 		doc, err := goquery.NewDocumentFromReader(reader)
 		DeBug("Load HTML", err)
+		doc.Find("script").Remove() // Remove Javascript codes
 		data.Description = ReplaceSyntaxs(doc.Text(), " ")
 	})
 
