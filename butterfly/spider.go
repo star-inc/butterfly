@@ -54,7 +54,12 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		doc, err := goquery.NewDocumentFromReader(reader)
 		DeBug("Load HTML", err)
 		doc.Find("script").Remove() // Remove Javascript codes
-		data.Description = ReplaceSyntaxs(doc.Text(), " ")
+		doc.Find("style").Remove()  // Remove CSS codes
+		data.Content = ReplaceSyntaxs(doc.Text(), " ")
+	})
+
+	handle.Client.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
+		data.Description = e.Attr("content")
 	})
 
 	handle.Client.OnHTML("title", func(e *colly.HTMLElement) {
