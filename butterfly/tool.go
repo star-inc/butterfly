@@ -9,11 +9,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 )
 
-// DeBug :
+// DeBug : Print errors for debug and report
 func DeBug(where string, err error) bool {
 	if err != nil {
 		fmt.Printf("Butterfly Error #%s\nReason:\n%s\n\n", where, err)
@@ -22,11 +23,17 @@ func DeBug(where string, err error) bool {
 	return true
 }
 
-// ReplaceSyntaxs :
+// ReplaceSyntaxs : Remove space and syntax
 func ReplaceSyntaxs(rawString string, filled string) string {
+	var output bytes.Buffer
 	rawString = strings.ReplaceAll(rawString, " ", "\x1e")
 	rawString = strings.ReplaceAll(rawString, "\t", "\x1e")
 	rawString = strings.ReplaceAll(rawString, "\n", "\x1e")
 	stringSlice := strings.Split(rawString, "\x1e")
-	return strings.Join(stringSlice, filled)
+	for _, word := range stringSlice {
+		if word != "" {
+			output.WriteString(word + filled)
+		}
+	}
+	return output.String()
 }
