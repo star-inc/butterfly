@@ -13,8 +13,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
-	strip "github.com/grokify/html-strip-tags-go"
 )
 
 // CollyHandle :
@@ -22,13 +22,6 @@ type CollyHandle struct {
 	Client    *colly.Collector
 	UserAgent string
 	Content   string
-}
-
-func removeSyntaxs(rawString string) string {
-	rawString = strings.ReplaceAll(rawString, " ", "")
-	rawString = strings.ReplaceAll(rawString, "\t", "")
-	rawString = strings.ReplaceAll(rawString, "\n", "")
-	return rawString
 }
 
 // NewCollyClient :
@@ -56,20 +49,28 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 	url, _ := url.Parse(uri)
 	colly.Async(true)
 	handle.Client.AllowedDomains = []string{url.Host}
+
+	handle.Client.OnHTML("html", func(e *colly.HTMLElement) {
+		reader := strings.NewReader(e.Text)
+		doc, err := goquery.NewDocumentFromReader(reader)
+		DeBug("Load HTML", err)
+		data.Description = ReplaceSyntaxs(doc.Text(), " ")
+	})
+
 	handle.Client.OnHTML("title", func(e *colly.HTMLElement) {
 		data.Title = e.Text
 	})
-	handle.Client.OnHTML("div", func(e *colly.HTMLElement) {
-		data.Description = removeSyntaxs(strip.StripTags(e.Text))
-	})
+
 	handle.Client.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		e.Request.Visit(e.Attr("href"))
 	})
+
 	handle.Client.OnRequest(func(r *colly.Request) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
 		solrHandle.Update(data)
 	})
+
 	handle.Client.Visit(uri)
 	handle.Client.Wait()
 }
