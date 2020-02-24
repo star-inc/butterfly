@@ -22,9 +22,10 @@ import (
 func HTTPGet(url string) string {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
-	DeBug("GetHTTP", err)
+	DeBug("GenRequest", err)
 	req.Header.Set("User-Agent", Config.UserAgent)
 	resp, err := client.Do(req)
+	DeBug("GetHTTP", err)
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	DeBug("ReadHTML", err)
