@@ -27,7 +27,7 @@ go get -u github.com/velebak/colly-sqlite3-storage/colly/sqlite3
 go get -u github.com/PuerkitoBio/goquery
 
 
-if [ -f "config.json" ]; then
+if [ ! -f $configfile ]; then
     echo "Coping \`$configfile_sample\` to \`$configfile\`"
     cat $configfile_sample > $configfile
 fi
