@@ -15,7 +15,8 @@ configfile="config.json"
 configfile_sample="config.sample.json"
 
 echo ""
-echo "> Welcome to help us improve Butterfly\n"
+echo "> Welcome to help us improve Butterfly"
+echo ""
 echo "https://github.com/star-inc/butterfly"
 
 echo ""
