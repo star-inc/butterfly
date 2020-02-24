@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"golang.org/x/net/html"
 )
@@ -31,7 +32,8 @@ func HTTPGet(url string, recovery int) string {
 		DeBug("ReadHTML", err)
 		output = string(body)
 	} else {
-		if err != nil && recovery == 0 {
+		if recovery == 0 {
+			time.Sleep(time.Duration(2) * time.Second)
 			HTTPGet(url, 1)
 		} else {
 			DeBug("GetHTTP", err)
