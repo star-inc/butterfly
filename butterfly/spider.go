@@ -9,6 +9,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 import (
+	"crypto/md5"
 	"fmt"
 	"net/url"
 	"os"
@@ -86,11 +87,14 @@ func (handle *Handles) Fetch(uri string) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
 
+		signature := md5.Sum([]byte(data.URI))
+		data.ID = fmt.Sprintf("%x", signature)
+
 		if _, exists := handle.RobotsTXT[r.URL.Host]; !exists {
 			handle.RobotsTXT[r.URL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", r.URL.Scheme, r.URL.Host), 0)
 		}
-		robots, _ := robotstxt.FromString(handle.RobotsTXT[r.URL.Host])
-		if robots.TestAgent(r.URL.Path, Config.Name) {
+
+		if robots, _ := robotstxt.FromString(handle.RobotsTXT[r.URL.Host]); robots.TestAgent(r.URL.Path, Config.Name) {
 			capturedHTML := HTTPGet(data.URI, 0)
 			reader := strings.NewReader(capturedHTML)
 			doc, err := goquery.NewDocumentFromReader(reader)
