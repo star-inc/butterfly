@@ -9,10 +9,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
-
 	"github.com/supersonictw/butterfly-solr/solr"
 )
 
@@ -21,28 +17,10 @@ type SolrHandle struct {
 	Client *solr.SolrInterface
 }
 
-type solrConfig struct {
-	URI        string `json:"solr_uri"`
-	Collection string `json:"collection"`
-}
-
-// Config Solr
-func readConfig(configPath string) solrConfig {
-	var config solrConfig
-	jsonFile, err := os.Open(configPath)
-	DeBug("Get JSON config", err)
-	defer jsonFile.Close()
-	srcJSON, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(srcJSON, &config)
-	DeBug("Load JSON Initialization", err)
-	return config
-}
-
 // NewSolrClient :
 func NewSolrClient() *SolrHandle {
 	handle := new(SolrHandle)
-	config := readConfig("config.json")
-	client, err := solr.NewSolrInterface(config.URI, config.Collection)
+	client, err := solr.NewSolrInterface(Config.SolrURI, Config.SolrCollection)
 	DeBug("Get Solr Client", err)
 	handle.Client = client
 	return handle

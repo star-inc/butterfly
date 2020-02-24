@@ -11,8 +11,25 @@ package butterfly
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strings"
+
+	"golang.org/x/net/html"
 )
+
+// HTTPGet :
+func HTTPGet(url string) string {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	DeBug("GetHTTP", err)
+	req.Header.Set("User-Agent", Config.UserAgent)
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	DeBug("ReadHTML", err)
+	return string(body)
+}
 
 // DeBug : Print errors for debug and report
 func DeBug(where string, err error) bool {
@@ -36,4 +53,27 @@ func ReplaceSyntaxs(rawString string, filled string) string {
 		}
 	}
 	return output.String()
+}
+
+// RemoveChildNode : Remove all child html node selected
+func RemoveChildNode(rootNode *html.Node, removeNode *html.Node) {
+	foundNode := false
+	checkNode := make(map[int]*html.Node)
+
+	i := 0
+	for n := rootNode.FirstChild; n != nil; n = n.NextSibling {
+		if n == removeNode {
+			foundNode = true
+			n.Parent.RemoveChild(n)
+		}
+
+		checkNode[i] = n
+		i++
+	}
+
+	if !foundNode {
+		for _, item := range checkNode {
+			RemoveChildNode(item, removeNode)
+		}
+	}
 }

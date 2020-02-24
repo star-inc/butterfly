@@ -1,4 +1,5 @@
 {
     "solr_uri": "http://localhost:8983/solr",
-    "collection": "violet"
+    "solr_collection": "violet",
+    "user-agent": "Mozilla/5.0 (compatible; Star Butterfly/1.0; +https://github.com/star-inc/butterfly)"
 }

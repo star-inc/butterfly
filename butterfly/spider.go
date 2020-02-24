@@ -36,7 +36,7 @@ func NewCollyClient(userAgent string) *CollyHandle {
 
 func (handle *CollyHandle) setUserAgent(userAgent string) {
 	if userAgent == "" {
-		handle.UserAgent = "Mozilla/5.0 (compatible; Star Butterfly/1.0; +https://github.com/star-inc/butterfly)"
+		handle.UserAgent = ""
 	} else {
 		handle.UserAgent = userAgent
 	}
@@ -48,15 +48,6 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 	url, _ := url.Parse(uri)
 	colly.Async(true)
 	handle.Client.AllowedDomains = []string{url.Host}
-
-	handle.Client.OnHTML("html", func(e *colly.HTMLElement) {
-		reader := strings.NewReader(e.Text)
-		doc, err := goquery.NewDocumentFromReader(reader)
-		DeBug("Load HTML", err)
-		doc.Find("script").Remove() // Remove Javascript codes
-		doc.Find("style").Remove()  // Remove CSS codes
-		data.Content = ReplaceSyntaxs(doc.Text(), " ")
-	})
 
 	handle.Client.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
 		data.Description = e.Attr("content")
@@ -73,6 +64,15 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 	handle.Client.OnRequest(func(r *colly.Request) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
+
+		capturedHTML := HTTPGet(data.URI)
+		reader := strings.NewReader(capturedHTML)
+		doc, err := goquery.NewDocumentFromReader(reader)
+		DeBug("Load HTML", err)
+		doc.Find("script").Remove() // Remove Javascript codes
+		doc.Find("style").Remove()  // Remove CSS codes
+		data.Content = ReplaceSyntaxs(doc.Text(), " ")
+
 		solrHandle.Update(data)
 	})
 
