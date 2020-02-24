@@ -22,6 +22,10 @@ func main() {
 	if len(os.Args) == 2 {
 		collyHandle.Fetch(os.Args[1])
 	} else {
-		fmt.Printf("Usage: %s <URI>\n", os.Args[0])
+		fmt.Println("\n\tButterfly")
+		fmt.Println("\t ===== ")
+		fmt.Println("\n\tThe web crawler base on Apache Solr for StarStart!")
+		fmt.Printf("\n\tUsage: %s <URI>\n\n", os.Args[0])
+		fmt.Print("\t\t(c) 2020 Star Inc. https://starinc.xyz\n\n")
 	}
 }
