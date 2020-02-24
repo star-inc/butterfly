@@ -59,7 +59,10 @@ func (handle *Handles) Fetch(uri string) {
 	url, _ := url.Parse(uri)
 	handle.setStorage(url.Host)
 	defer handle.CollyStorage.Close()
-	handle.Colly.AllowedDomains = []string{url.Host}
+
+	if Config.ForcusOnURI {
+		handle.Colly.AllowedDomains = []string{url.Host}
+	}
 
 	var collyQueue *queue.Queue
 	collyQueue, _ = queue.New(Config.Colly.Threads, handle.CollyStorage)

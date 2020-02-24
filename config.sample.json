@@ -1,4 +1,5 @@
 {
+    "forcus-on-uri": true,
     "user-agent": "Mozilla/5.0 (compatible; Star Butterfly/1.0; +https://github.com/star-inc/butterfly)",
     "solr": {
         "uri": "http://localhost:8983/solr",

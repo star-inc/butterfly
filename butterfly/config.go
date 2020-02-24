@@ -15,9 +15,10 @@ import (
 )
 
 type configStruct struct {
-	UserAgent string      `json:"user-agent"`
-	Solr      solrConfig  `json:"solr"`
-	Colly     collyConfig `json:"colly"`
+	ForcusOnURI bool        `json:"forcus-on-uri"`
+	UserAgent   string      `json:"user-agent"`
+	Solr        solrConfig  `json:"solr"`
+	Colly       collyConfig `json:"colly"`
 }
 
 type solrConfig struct {
