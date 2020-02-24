@@ -44,7 +44,6 @@ func (handle *Handles) setStorage() {
 	storage := &sqlite3.Storage{
 		Filename: Config.Colly.SqlitePath,
 	}
-	defer storage.Close()
 	err := handle.Colly.SetStorage(storage)
 	DeBug("Colly setStorage", err)
 	handle.CollyStorage = storage
@@ -98,7 +97,8 @@ func (handle *Handles) Fetch(uri string) {
 	})
 
 	if Config.Colly.UseSqlite {
-		collyQueue.AddURL("http://www.example.com")
+		collyQueue.AddURL(uri)
+		collyQueue.Run(handle.Colly)
 	} else {
 		handle.Colly.Visit(uri)
 		handle.Colly.Wait()
