@@ -5,7 +5,7 @@
         "collection": "violet"
     },
     "colly": {
-        "use_sqlite": false,
+        "threads": 8,
         "sqlite_path": "./butterfly.sqlite3"
     }
 }

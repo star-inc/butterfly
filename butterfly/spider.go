@@ -34,9 +34,7 @@ func NewCollyClient(solr *SolrHandle) *Handles {
 	)
 	handle.Colly = client
 	handle.Solr = solr
-	if Config.Colly.UseSqlite {
-		handle.setStorage()
-	}
+	handle.setStorage()
 	return handle
 }
 
@@ -57,11 +55,7 @@ func (handle *Handles) Fetch(uri string) {
 	handle.Colly.AllowedDomains = []string{url.Host}
 
 	var collyQueue *queue.Queue
-	if Config.Colly.UseSqlite {
-		collyQueue, _ = queue.New(8, handle.CollyStorage)
-	} else {
-		colly.Async(true)
-	}
+	collyQueue, _ = queue.New(Config.Colly.Threads, handle.CollyStorage)
 
 	handle.Colly.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
 		data.Description = e.Attr("content")
@@ -72,11 +66,7 @@ func (handle *Handles) Fetch(uri string) {
 	})
 
 	handle.Colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		if Config.Colly.UseSqlite {
-			collyQueue.AddURL(e.Request.AbsoluteURL(e.Attr("href")))
-		} else {
-			e.Request.Visit(e.Attr("href"))
-		}
+		collyQueue.AddURL(e.Request.AbsoluteURL(e.Attr("href")))
 	})
 
 	handle.Colly.OnRequest(func(r *colly.Request) {
@@ -96,11 +86,6 @@ func (handle *Handles) Fetch(uri string) {
 		handle.Solr.Update(data)
 	})
 
-	if Config.Colly.UseSqlite {
-		collyQueue.AddURL(uri)
-		collyQueue.Run(handle.Colly)
-	} else {
-		handle.Colly.Visit(uri)
-		handle.Colly.Wait()
-	}
+	collyQueue.AddURL(uri)
+	collyQueue.Run(handle.Colly)
 }

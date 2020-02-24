@@ -26,7 +26,7 @@ type solrConfig struct {
 }
 
 type collyConfig struct {
-	UseSqlite  bool   `json:"use_sqlite"`
+	Threads    int    `json:"threads"`
 	SqlitePath string `json:"sqlite_path"`
 }
 
