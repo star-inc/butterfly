@@ -6,6 +6,6 @@
     },
     "colly": {
         "threads": 8,
-        "sqlite_path": "./butterfly.sqlite3"
+        "sqlite_path": "databases/"
     }
 }

@@ -11,6 +11,7 @@ package butterfly
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -34,13 +35,17 @@ func NewCollyClient(solr *SolrHandle) *Handles {
 	)
 	handle.Colly = client
 	handle.Solr = solr
-	handle.setStorage()
 	return handle
 }
 
-func (handle *Handles) setStorage() {
+func (handle *Handles) setStorage(domain string) {
+	if _, err := os.Stat(Config.Colly.SqlitePath); os.IsNotExist(err) {
+		err = os.MkdirAll(Config.Colly.SqlitePath, 0755)
+		DeBug("Colly setStorage create directory", err)
+	}
+	path := fmt.Sprintf("%s%s.sqlite3", Config.Colly.SqlitePath, domain)
 	storage := &sqlite3.Storage{
-		Filename: Config.Colly.SqlitePath,
+		Filename: path,
 	}
 	err := handle.Colly.SetStorage(storage)
 	DeBug("Colly setStorage", err)
@@ -52,6 +57,7 @@ func (handle *Handles) Fetch(uri string) {
 	data := new(VioletDataStruct)
 
 	url, _ := url.Parse(uri)
+	handle.setStorage(url.Host)
 	handle.Colly.AllowedDomains = []string{url.Host}
 
 	var collyQueue *queue.Queue
