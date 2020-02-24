@@ -26,6 +26,7 @@ go get -u github.com/supersonictw/butterfly-solr/solr
 go get -u github.com/gocolly/colly/...
 go get -u github.com/velebak/colly-sqlite3-storage/colly/sqlite3
 go get -u github.com/PuerkitoBio/goquery
+go get -u github.com/temoto/robotstxt
 
 
 if [ ! -f $configfile ]; then

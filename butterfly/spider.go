@@ -17,6 +17,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/queue"
+	"github.com/temoto/robotstxt"
 	"github.com/velebak/colly-sqlite3-storage/colly/sqlite3"
 )
 
@@ -25,6 +26,7 @@ type Handles struct {
 	Colly        *colly.Collector
 	CollyStorage *sqlite3.Storage
 	Solr         *SolrHandle
+	RobotsTXT    map[string]string
 }
 
 // NewCollyClient : Create new colly collection
@@ -35,6 +37,7 @@ func NewCollyClient(solr *SolrHandle) *Handles {
 	)
 	handle.Colly = client
 	handle.Solr = solr
+	handle.RobotsTXT = make(map[string]string)
 	return handle
 }
 
@@ -56,12 +59,12 @@ func (handle *Handles) setStorage(domain string) {
 func (handle *Handles) Fetch(uri string) {
 	data := new(VioletDataStruct)
 
-	url, _ := url.Parse(uri)
-	handle.setStorage(url.Host)
+	queryURL, _ := url.Parse(uri)
+	handle.setStorage(queryURL.Host)
 	defer handle.CollyStorage.Close()
 
 	if Config.ForcusOnURI {
-		handle.Colly.AllowedDomains = []string{url.Host}
+		handle.Colly.AllowedDomains = []string{queryURL.Host}
 	}
 
 	var collyQueue *queue.Queue
@@ -83,15 +86,24 @@ func (handle *Handles) Fetch(uri string) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
 
-		capturedHTML := HTTPGet(data.URI, 0)
-		reader := strings.NewReader(capturedHTML)
-		doc, err := goquery.NewDocumentFromReader(reader)
-		DeBug("Load HTML", err)
-		doc.Find("noscript").Remove() // Remove NoJavascript codes
-		doc.Find("script").Remove()   // Remove Javascript codes
-		doc.Find("style").Remove()    // Remove CSS codes
-		doc.Find("iframe").Remove()   // Remove Iframe codes
-		data.Content = ReplaceSyntaxs(doc.Text(), " ")
+		if _, exists := handle.RobotsTXT[r.URL.Host]; !exists {
+			handle.RobotsTXT[r.URL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", r.URL.Scheme, r.URL.Host), 0)
+		}
+		robots, _ := robotstxt.FromString(handle.RobotsTXT[r.URL.Host])
+		if robots.TestAgent(r.URL.Path, Config.Name) {
+			capturedHTML := HTTPGet(data.URI, 0)
+			reader := strings.NewReader(capturedHTML)
+			doc, err := goquery.NewDocumentFromReader(reader)
+			DeBug("Load HTML", err)
+			doc.Find("noscript").Remove() // Remove NoJavascript codes
+			doc.Find("script").Remove()   // Remove Javascript codes
+			doc.Find("style").Remove()    // Remove CSS codes
+			doc.Find("iframe").Remove()   // Remove Iframe codes
+			data.Content = ReplaceSyntaxs(doc.Text(), " ")
+		} else {
+			data.Content = ""
+			fmt.Println("> Forbidden by robots.txt")
+		}
 
 		handle.Solr.Update(data)
 	})

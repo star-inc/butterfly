@@ -15,6 +15,7 @@ import (
 )
 
 type configStruct struct {
+	Name        string      `json:"name"`
 	ForcusOnURI bool        `json:"forcus-on-uri"`
 	UserAgent   string      `json:"user-agent"`
 	Solr        solrConfig  `json:"solr"`
