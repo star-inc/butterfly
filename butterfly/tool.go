@@ -20,21 +20,25 @@ import (
 
 // HTTPGet :
 func HTTPGet(url string, recovery int) string {
+	var output string
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	DeBug("GenRequest", err)
 	req.Header.Set("User-Agent", Config.UserAgent)
 	resp, err := client.Do(req)
-	defer func() {
-		resp.Body.Close()
+	if err == nil {
+		body, err := ioutil.ReadAll(resp.Body)
+		DeBug("ReadHTML", err)
+		output = string(body)
+	} else {
 		if err != nil && recovery == 0 {
 			HTTPGet(url, 1)
+		} else {
+			DeBug("GetHTTP", err)
 		}
-	}()
-	DeBug("GetHTTP", err)
-	body, err := ioutil.ReadAll(resp.Body)
-	DeBug("ReadHTML", err)
-	return string(body)
+	}
+	resp.Body.Close()
+	return output
 }
 
 // DeBug : Print errors for debug and report
