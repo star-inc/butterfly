@@ -1,5 +1,11 @@
 {
-    "solr_uri": "http://localhost:8983/solr",
-    "solr_collection": "violet",
-    "user-agent": "Mozilla/5.0 (compatible; Star Butterfly/1.0; +https://github.com/star-inc/butterfly)"
+    "user-agent": "Mozilla/5.0 (compatible; Star Butterfly/1.0; +https://github.com/star-inc/butterfly)",
+    "solr": {
+        "uri": "http://localhost:8983/solr",
+        "collection": "violet"
+    },
+    "colly": {
+        "use_sqlite": true,
+        "sqlite_path": "./butterfly.sqlite3"
+    }
 }

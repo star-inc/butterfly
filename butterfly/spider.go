@@ -15,53 +15,58 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
+	"github.com/velebak/colly-sqlite3-storage/colly/sqlite3"
 )
 
-// CollyHandle : Define CollyHandle Class
-type CollyHandle struct {
-	Client    *colly.Collector
-	UserAgent string
+// Handles : Define Handles Class
+type Handles struct {
+	Colly *colly.Collector
+	Solr  *SolrHandle
 }
 
 // NewCollyClient : Create new colly collection
-func NewCollyClient(userAgent string) *CollyHandle {
-	handle := new(CollyHandle)
-	handle.setUserAgent(userAgent)
+func NewCollyClient(solr *SolrHandle) *Handles {
+	handle := new(Handles)
 	client := colly.NewCollector(
-		colly.UserAgent(handle.UserAgent),
+		colly.UserAgent(Config.UserAgent),
 	)
-	handle.Client = client
+	handle.Colly = client
+	handle.Solr = solr
+	if Config.Colly.UseSqlite {
+		handle.setStorage()
+	}
 	return handle
 }
 
-func (handle *CollyHandle) setUserAgent(userAgent string) {
-	if userAgent == "" {
-		handle.UserAgent = ""
-	} else {
-		handle.UserAgent = userAgent
+func (handle *Handles) setStorage() {
+	storage := &sqlite3.Storage{
+		Filename: Config.Colly.SqlitePath,
 	}
+	defer storage.Close()
+	err := handle.Colly.SetStorage(storage)
+	DeBug("Colly setStorage", err)
 }
 
 // Fetch : Capture web pages on Internet and submit to Solr
-func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
+func (handle *Handles) Fetch(uri string) {
 	data := new(VioletDataStruct)
 	url, _ := url.Parse(uri)
 	colly.Async(true)
-	handle.Client.AllowedDomains = []string{url.Host}
+	handle.Colly.AllowedDomains = []string{url.Host}
 
-	handle.Client.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
+	handle.Colly.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
 		data.Description = e.Attr("content")
 	})
 
-	handle.Client.OnHTML("title", func(e *colly.HTMLElement) {
+	handle.Colly.OnHTML("title", func(e *colly.HTMLElement) {
 		data.Title = e.Text
 	})
 
-	handle.Client.OnHTML("a[href]", func(e *colly.HTMLElement) {
+	handle.Colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		e.Request.Visit(e.Attr("href"))
 	})
 
-	handle.Client.OnRequest(func(r *colly.Request) {
+	handle.Colly.OnRequest(func(r *colly.Request) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
 
@@ -75,9 +80,9 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		doc.Find("iframe").Remove()   // Remove Iframe codes
 		data.Content = ReplaceSyntaxs(doc.Text(), " ")
 
-		solrHandle.Update(data)
+		handle.Solr.Update(data)
 	})
 
-	handle.Client.Visit(uri)
-	handle.Client.Wait()
+	handle.Colly.Visit(uri)
+	handle.Colly.Wait()
 }

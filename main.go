@@ -18,9 +18,9 @@ import (
 func main() {
 	butterfly.ReadConfig("config.json")
 	solrHandle := butterfly.NewSolrClient()
-	collyHandle := butterfly.NewCollyClient("")
+	collyHandle := butterfly.NewCollyClient(solrHandle)
 	if len(os.Args) == 2 {
-		collyHandle.Fetch(os.Args[1], solrHandle)
+		collyHandle.Fetch(os.Args[1])
 	} else {
 		fmt.Printf("Usage: %s <URI>\n", os.Args[0])
 	}

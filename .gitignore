@@ -1,3 +1,4 @@
 .gitpod.yml
 config.json
 main
+*.sqlite3

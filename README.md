@@ -13,5 +13,7 @@ Follow to execute these commands
     go get -u github.com/grokify/html-strip-tags-go
     go get -u github.com/supersonictw/butterfly-solr/solr
     go get -u github.com/gocolly/colly/...
+    go get -u github.com/velebak/colly-sqlite3-storage/colly/sqlite
+    go get -u github.com/PuerkitoBio/goquery
 
 > (c) 2020 Star Inc.

@@ -15,9 +15,19 @@ import (
 )
 
 type configStruct struct {
-	SolrURI        string `json:"solr_uri"`
-	SolrCollection string `json:"solr_collection"`
-	UserAgent      string `json:"user-agent"`
+	UserAgent string      `json:"user-agent"`
+	Solr      solrConfig  `json:"solr"`
+	Colly     collyConfig `json:"colly"`
+}
+
+type solrConfig struct {
+	URI        string `json:"uri"`
+	Collection string `json:"collection"`
+}
+
+type collyConfig struct {
+	UseSqlite  bool   `json:"use_sqlite"`
+	SqlitePath string `json:"sqlite_path"`
 }
 
 // Config : Global Settings for butterfly from config.json

@@ -20,7 +20,7 @@ type SolrHandle struct {
 // NewSolrClient :
 func NewSolrClient() *SolrHandle {
 	handle := new(SolrHandle)
-	client, err := solr.NewSolrInterface(Config.SolrURI, Config.SolrCollection)
+	client, err := solr.NewSolrInterface(Config.Solr.URI, Config.Solr.Collection)
 	DeBug("Get Solr Client", err)
 	handle.Client = client
 	return handle
