@@ -52,15 +52,17 @@ func (handle *Handles) setStorage() {
 
 // Fetch : Capture web pages on Internet and submit to Solr
 func (handle *Handles) Fetch(uri string) {
-	var collyQueue *queue.Queue
 	data := new(VioletDataStruct)
+
 	url, _ := url.Parse(uri)
+	handle.Colly.AllowedDomains = []string{url.Host}
+
+	var collyQueue *queue.Queue
 	if Config.Colly.UseSqlite {
 		collyQueue, _ = queue.New(8, handle.CollyStorage)
 	} else {
 		colly.Async(true)
 	}
-	handle.Colly.AllowedDomains = []string{url.Host}
 
 	handle.Colly.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
 		data.Description = e.Attr("content")
