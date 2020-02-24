@@ -69,8 +69,10 @@ func (handle *CollyHandle) Fetch(uri string, solrHandle *SolrHandle) {
 		reader := strings.NewReader(capturedHTML)
 		doc, err := goquery.NewDocumentFromReader(reader)
 		DeBug("Load HTML", err)
-		doc.Find("script").Remove() // Remove Javascript codes
-		doc.Find("style").Remove()  // Remove CSS codes
+		doc.Find("noscript").Remove() // Remove NoJavascript codes
+		doc.Find("script").Remove()   // Remove Javascript codes
+		doc.Find("style").Remove()    // Remove CSS codes
+		doc.Find("iframe").Remove()   // Remove Iframe codes
 		data.Content = ReplaceSyntaxs(doc.Text(), " ")
 
 		solrHandle.Update(data)
