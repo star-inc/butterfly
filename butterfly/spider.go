@@ -15,13 +15,15 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/queue"
 	"github.com/velebak/colly-sqlite3-storage/colly/sqlite3"
 )
 
 // Handles : Define Handles Class
 type Handles struct {
-	Colly *colly.Collector
-	Solr  *SolrHandle
+	Colly        *colly.Collector
+	CollyStorage *sqlite3.Storage
+	Solr         *SolrHandle
 }
 
 // NewCollyClient : Create new colly collection
@@ -45,13 +47,19 @@ func (handle *Handles) setStorage() {
 	defer storage.Close()
 	err := handle.Colly.SetStorage(storage)
 	DeBug("Colly setStorage", err)
+	handle.CollyStorage = storage
 }
 
 // Fetch : Capture web pages on Internet and submit to Solr
 func (handle *Handles) Fetch(uri string) {
+	var collyQueue *queue.Queue
 	data := new(VioletDataStruct)
 	url, _ := url.Parse(uri)
-	colly.Async(true)
+	if Config.Colly.UseSqlite {
+		collyQueue, _ = queue.New(8, handle.CollyStorage)
+	} else {
+		colly.Async(true)
+	}
 	handle.Colly.AllowedDomains = []string{url.Host}
 
 	handle.Colly.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
@@ -63,7 +71,11 @@ func (handle *Handles) Fetch(uri string) {
 	})
 
 	handle.Colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		e.Request.Visit(e.Attr("href"))
+		if Config.Colly.UseSqlite {
+			collyQueue.AddURL(e.Request.AbsoluteURL(e.Attr("href")))
+		} else {
+			e.Request.Visit(e.Attr("href"))
+		}
 	})
 
 	handle.Colly.OnRequest(func(r *colly.Request) {
@@ -83,6 +95,10 @@ func (handle *Handles) Fetch(uri string) {
 		handle.Solr.Update(data)
 	})
 
-	handle.Colly.Visit(uri)
-	handle.Colly.Wait()
+	if Config.Colly.UseSqlite {
+		collyQueue.AddURL("http://www.example.com")
+	} else {
+		handle.Colly.Visit(uri)
+		handle.Colly.Wait()
+	}
 }
