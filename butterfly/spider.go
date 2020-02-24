@@ -99,6 +99,7 @@ func (handle *Handles) Fetch(uri string) {
 			doc.Find("script").Remove()   // Remove Javascript codes
 			doc.Find("style").Remove()    // Remove CSS codes
 			doc.Find("iframe").Remove()   // Remove Iframe codes
+			doc.Find("meta").Remove()     // Remove Meta codes
 			data.Content = ReplaceSyntaxs(doc.Text(), " ")
 		} else {
 			forbiddenMsg := "> Forbidden by robots.txt"
