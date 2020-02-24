@@ -101,8 +101,9 @@ func (handle *Handles) Fetch(uri string) {
 			doc.Find("iframe").Remove()   // Remove Iframe codes
 			data.Content = ReplaceSyntaxs(doc.Text(), " ")
 		} else {
-			data.Content = ""
-			fmt.Println("> Forbidden by robots.txt")
+			forbiddenMsg := "> Forbidden by robots.txt"
+			data.Content = forbiddenMsg
+			fmt.Println(forbiddenMsg)
 		}
 
 		handle.Solr.Update(data)
