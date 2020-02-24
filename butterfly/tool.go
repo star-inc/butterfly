@@ -19,14 +19,19 @@ import (
 )
 
 // HTTPGet :
-func HTTPGet(url string) string {
+func HTTPGet(url string, recovery int) string {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	DeBug("GenRequest", err)
 	req.Header.Set("User-Agent", Config.UserAgent)
 	resp, err := client.Do(req)
+	defer func() {
+		resp.Body.Close()
+		if err != nil && recovery == 0 {
+			HTTPGet(url, 1)
+		}
+	}()
 	DeBug("GetHTTP", err)
-	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	DeBug("ReadHTML", err)
 	return string(body)

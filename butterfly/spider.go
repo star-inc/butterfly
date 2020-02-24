@@ -58,6 +58,7 @@ func (handle *Handles) Fetch(uri string) {
 
 	url, _ := url.Parse(uri)
 	handle.setStorage(url.Host)
+	defer handle.CollyStorage.Close()
 	handle.Colly.AllowedDomains = []string{url.Host}
 
 	var collyQueue *queue.Queue
@@ -79,7 +80,7 @@ func (handle *Handles) Fetch(uri string) {
 		data.URI = r.URL.String()
 		fmt.Println("Visiting", r.URL)
 
-		capturedHTML := HTTPGet(data.URI)
+		capturedHTML := HTTPGet(data.URI, 0)
 		reader := strings.NewReader(capturedHTML)
 		doc, err := goquery.NewDocumentFromReader(reader)
 		DeBug("Load HTML", err)
