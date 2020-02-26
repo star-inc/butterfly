@@ -56,10 +56,54 @@ func (handle *Handles) setStorage(domain string) {
 	handle.CollyStorage = storage
 }
 
-// Fetch : Capture web pages on Internet and submit to Solr
-func (handle *Handles) Fetch(uri string) {
+func (handle *Handles) collect(uri string) *VioletDataStruct {
 	data := new(VioletDataStruct)
 
+	data.URI = uri
+	queryURL, _ := url.Parse(uri)
+
+	if queryURL.Scheme == "" {
+		data.URI = fmt.Sprintf("http:%s", uri)
+		queryURL, _ = url.Parse(data.URI)
+	}
+
+	fmt.Println("Visiting", data.URI)
+
+	signature := md5.Sum([]byte(data.URI))
+	data.ID = fmt.Sprintf("%x", signature)
+
+	if _, exists := handle.RobotsTXT[queryURL.Host]; !exists {
+		handle.RobotsTXT[queryURL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", queryURL.Scheme, queryURL.Host), 0)
+	}
+
+	if robots, _ := robotstxt.FromString(handle.RobotsTXT[queryURL.Host]); robots.TestAgent(queryURL.Path, Config.Name) {
+		capturedHTML := HTTPGet(data.URI, 0)
+
+		reader := strings.NewReader(capturedHTML)
+		doc, err := goquery.NewDocumentFromReader(reader)
+		DeBug("Load HTML", err)
+
+		data.Title = doc.Find("title").Text()
+		data.Description, _ = doc.Find("meta[name=description]").Attr("content")
+
+		doc.Find("noscript").Remove() // Remove NoJavascript codes
+		doc.Find("script").Remove()   // Remove Javascript codes
+		doc.Find("style").Remove()    // Remove CSS codes
+		doc.Find("iframe").Remove()   // Remove Iframe codes
+		doc.Find("meta").Remove()     // Remove Meta codes
+
+		data.Content = ReplaceSyntaxs(doc.Text(), " ")
+	} else {
+		forbiddenMsg := "> Forbidden by robots.txt"
+		data.Content = forbiddenMsg
+		fmt.Println(forbiddenMsg)
+	}
+
+	return data
+}
+
+// Fetch : Capture web pages on Internet and submit to Solr
+func (handle *Handles) Fetch(uri string) {
 	queryURL, _ := url.Parse(uri)
 	handle.setStorage(queryURL.Host)
 	defer handle.CollyStorage.Close()
@@ -71,47 +115,13 @@ func (handle *Handles) Fetch(uri string) {
 	var collyQueue *queue.Queue
 	collyQueue, _ = queue.New(Config.Colly.Threads, handle.CollyStorage)
 
-	handle.Colly.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
-		data.Description = e.Attr("content")
-	})
-
-	handle.Colly.OnHTML("title", func(e *colly.HTMLElement) {
-		data.Title = e.Text
+	handle.Colly.OnRequest(func(r *colly.Request) {
+		data := handle.collect(r.URL.String())
+		handle.Solr.Update(data)
 	})
 
 	handle.Colly.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		collyQueue.AddURL(e.Request.AbsoluteURL(e.Attr("href")))
-	})
-
-	handle.Colly.OnRequest(func(r *colly.Request) {
-		data.URI = r.URL.String()
-		fmt.Println("Visiting", r.URL)
-
-		signature := md5.Sum([]byte(data.URI))
-		data.ID = fmt.Sprintf("%x", signature)
-
-		if _, exists := handle.RobotsTXT[r.URL.Host]; !exists {
-			handle.RobotsTXT[r.URL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", r.URL.Scheme, r.URL.Host), 0)
-		}
-
-		if robots, _ := robotstxt.FromString(handle.RobotsTXT[r.URL.Host]); robots.TestAgent(r.URL.Path, Config.Name) {
-			capturedHTML := HTTPGet(data.URI, 0)
-			reader := strings.NewReader(capturedHTML)
-			doc, err := goquery.NewDocumentFromReader(reader)
-			DeBug("Load HTML", err)
-			doc.Find("noscript").Remove() // Remove NoJavascript codes
-			doc.Find("script").Remove()   // Remove Javascript codes
-			doc.Find("style").Remove()    // Remove CSS codes
-			doc.Find("iframe").Remove()   // Remove Iframe codes
-			doc.Find("meta").Remove()     // Remove Meta codes
-			data.Content = ReplaceSyntaxs(doc.Text(), " ")
-		} else {
-			forbiddenMsg := "> Forbidden by robots.txt"
-			data.Content = forbiddenMsg
-			fmt.Println(forbiddenMsg)
-		}
-
-		handle.Solr.Update(data)
 	})
 
 	collyQueue.AddURL(uri)
