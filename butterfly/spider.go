@@ -67,7 +67,7 @@ func (handle *Handles) collect(uri string) *VioletDataStruct {
 		queryURL, _ = url.Parse(data.URI)
 	}
 
-	fmt.Println("Visiting", data.URI)
+	fmt.Println("Collecting", data.URI)
 
 	signature := md5.Sum([]byte(data.URI))
 	data.ID = fmt.Sprintf("%x", signature)
@@ -116,6 +116,7 @@ func (handle *Handles) Fetch(uri string) {
 	collyQueue, _ = queue.New(Config.Colly.Threads, handle.CollyStorage)
 
 	handle.Colly.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL)
 		data := handle.collect(r.URL.String())
 		handle.Solr.Update(data)
 	})
