@@ -15,13 +15,15 @@ Get the execute file official build via [GitHub Releases](https://github.com/sta
 No install required,
 but you can put it on the directory your terminal $PATH variable points for convenient.
 
-After all, set up your configure file (default name: `.butterfly_config.json`).
+Eventually,
+set up your config file (default name: `.butterfly_config.json`),
+and move it to the directory where you want to execute `butterfly` command.
 
 ## Usage
 
 ### Warning
 
-The configure file must be existed under the directory you execute `butterfly` command.
+The config file must be existed under the directory you execute `butterfly` command.
 
 ### Execute
 
