@@ -9,7 +9,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 // Violet : The default schema for StarStart! Service
-// Schema XML: https://bit.ly/32k5Fqw
+// Schema XML: https://bit.ly/2I0QxF8
 // Usage: https://bit.ly/32r9Noz
 
 // VioletDataStruct : Data structure for Violet

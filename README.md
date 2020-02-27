@@ -2,16 +2,59 @@
 
 ![Version](https://img.shields.io/badge/v1-OpenSource-3300AA.svg) ![License](https://img.shields.io/badge/license-MPL--2.0-FF6600.svg) ![Platform](https://img.shields.io/badge/base_on-StarStart!-11BAFF.svg) [![Code-Inspector_Score](https://www.code-inspector.com/project/4429/score/svg) ![Code-Inspector_Score](https://www.code-inspector.com/project/4429/status/svg)](https://frontend.code-inspector.com/public/project/4429/butterfly/dashboard)
 
-The web crawler base on Apache Solr for StarStart!
+> [[Violet](https://github.com/star-inc/violet)] + [[Butterfly](https://github.com/star-inc/butterfly)] = {[StarStart!](https://start.starinc.xyz)}
 
 ![logo](logo.svg)
 
+The World-Wide-Web crawler for Apache Solr
+
+## Installation
+
+Get the execute file official build via [GitHub Releases](https://github.com/star-inc/butterfly/releases).
+
+No install required,
+but you can put it on the directory your terminal $PATH variable points for convenient.
+
+After all, set up your configure file (default name: `.butterfly_config.json`).
+
+## Usage
+
+### Warning
+
+The configure file must be existed under the directory you execute `butterfly` command.
+
+### Execute
+
+    ./butterfly <URI>
+
+The URI is a variable,
+that the website URL you want to crawl on start.
+
 ## Developmet Environment
 
-Please execute this command
+### Requirement
 
-- GNU Linux / MacOSX
+Butterfly requires [Go Language Compiler](https://golang.org/dl) >= 1.13
 
-    sh bootstrap.sh
+Please check your `go version` or install the latest version.
+
+- GNU Linux / MacOSX / Unix Like
+
+    Execute this command
+
+    `sh bootstrap.sh`
+
+- Win32 Platform
+
+    We have no plan to support Microsoft Windows,
+    but you still can get the go packages Butterfly required.
+
+### Compilation
+
+Just do it.
+
+    go build main.go -o butterfly
+
+The "butterfly" will be the execute file you build on your own self.
 
 > (c) 2020 Star Inc.

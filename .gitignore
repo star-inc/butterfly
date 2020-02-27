@@ -1,5 +1,5 @@
 .gitpod.yml
 config.json
-main
+butterfly
 *.sqlite3
 *.sqlite3-journal

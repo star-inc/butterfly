@@ -11,7 +11,7 @@ cat <<EOF
 [The software licensed under Mozilla Public License Version 2.0]
 EOF
 
-configfile="config.json"
+configfile=".butterfly_config.json"
 configfile_sample="config.sample.json"
 
 echo ""
