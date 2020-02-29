@@ -22,7 +22,7 @@ echo "https://github.com/star-inc/butterfly"
 echo ""
 echo "Installing Go Packages"
 go get -u github.com/grokify/html-strip-tags-go
-go get -u github.com/supersonictw/butterfly-solr/solr
+go get -u github.com/star-inc/butterfly-solr/solr
 go get -u github.com/gocolly/colly/...
 go get -u github.com/velebak/colly-sqlite3-storage/colly/sqlite3
 go get -u github.com/PuerkitoBio/goquery

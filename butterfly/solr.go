@@ -9,7 +9,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package butterfly
 
 import (
-	"github.com/supersonictw/butterfly-solr/solr"
+	"github.com/star-inc/butterfly-solr/solr"
 )
 
 // SolrHandle :
