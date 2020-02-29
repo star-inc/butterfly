@@ -55,7 +55,7 @@ Please check your `go version` or install the latest version.
 
 Just do it.
 
-    go build -o butterfly main.go
+    go build
 
 The "butterfly" will be the execute file you build on your own self.
 

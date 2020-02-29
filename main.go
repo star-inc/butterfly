@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"os"
 
-	"./butterfly"
+	butterfly "./libs"
 )
 
 func main() {
