@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	butterfly.ReadConfig(".butterfly_config.json")
+	butterfly.ReadConfig("config.json")
 	solrHandle := butterfly.NewSolrClient()
 	collyHandle := butterfly.NewCollyClient(solrHandle)
 	if len(os.Args) == 2 {

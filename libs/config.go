@@ -14,6 +14,11 @@ import (
 	"os"
 )
 
+type siteList struct {
+	Domain string `json:"domain"`
+	StartPath string `json:"start-path"`
+}
+
 type configStruct struct {
 	Name        string      `json:"name"`
 	ForcusOnURI bool        `json:"forcus-on-uri"`
@@ -32,8 +37,21 @@ type collyConfig struct {
 	SqlitePath string `json:"sqlite_path"`
 }
 
+// SiteList : 
+var SiteList siteList
+
 // Config : Global Settings for butterfly from config.json
 var Config configStruct
+
+// ReadSiteList : 
+func ReadSiteList(configPath string) {
+	jsonFile, err := os.Open(configPath)
+	DeBug("Get JSON config", err)
+	defer jsonFile.Close()
+	srcJSON, _ := ioutil.ReadAll(jsonFile)
+	err = json.Unmarshal(srcJSON, &SiteList)
+	DeBug("Load JSON Initialization", err)
+}
 
 // ReadConfig : Load configure file to Config
 func ReadConfig(configPath string) {

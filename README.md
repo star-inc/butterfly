@@ -16,7 +16,7 @@ No install required,
 but you can put it on the directory your terminal $PATH variable points for convenient.
 
 Eventually,
-set up your config file (default name: `.butterfly_config.json`),
+set up your config file (Command: `butterfly --config`),
 and move it to the directory where you want to execute `butterfly` command.
 
 ## Usage
