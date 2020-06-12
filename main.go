@@ -11,12 +11,22 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/user"
 
 	butterfly "./libs"
 )
 
 func main() {
-	butterfly.ReadConfig("config.json")
+	var configPathRoot string
+	osUser, err := user.Current()
+	butterfly.DeBug("Get OS User", err)
+	if osUser.Username == "root" {
+		configPathRoot = "/etc"
+	} else {
+		configPathRoot = osUser.HomeDir
+	}
+	configPath := fmt.Sprintf("%s/.config/butterfly/config.json", configPathRoot)
+	butterfly.ReadConfig(configPath)
 	solrHandle := butterfly.NewSolrClient()
 	collyHandle := butterfly.NewCollyClient(solrHandle)
 	if len(os.Args) == 2 {
