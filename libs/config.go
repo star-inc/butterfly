@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-type siteList struct {
+type siteListItem struct {
 	Domain string `json:"domain"`
 	StartPath string `json:"start-path"`
 }
@@ -38,14 +38,14 @@ type collyConfig struct {
 }
 
 // SiteList : 
-var SiteList siteList
+var SiteList []siteListItem
 
 // Config : Global Settings for butterfly from config.json
 var Config configStruct
 
 // ReadSiteList : 
 func ReadSiteList(configPath string) {
-	jsonFile, err := os.Open(configPath)
+	jsonFile, err := os.Open(configPath + "/sites.json")
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)
@@ -53,9 +53,15 @@ func ReadSiteList(configPath string) {
 	DeBug("Load JSON Initialization", err)
 }
 
+// ModifySiteList : 
+func ModifySiteList(newData []siteListItem) {
+	file, _ := json.Marshal(newData)
+	_ = ioutil.WriteFile("test.json", file, 0644)
+}
+
 // ReadConfig : Load configure file to Config
 func ReadConfig(configPath string) {
-	jsonFile, err := os.Open(configPath)
+	jsonFile, err := os.Open(configPath + "/config.json")
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)

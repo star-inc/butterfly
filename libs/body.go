@@ -30,14 +30,13 @@ type Handles struct {
 	RobotsTXT    map[string]string
 }
 
-// NewCollyClient : Create new colly collection
-func NewCollyClient(solr *SolrHandle) *Handles {
+// NewBody : Create body for butterfly
+func NewBody() *Handles {
 	handle := new(Handles)
-	client := colly.NewCollector(
+	handle.Colly = colly.NewCollector(
 		colly.UserAgent(Config.UserAgent),
 	)
-	handle.Colly = client
-	handle.Solr = solr
+	handle.Solr = NewSolrClient()
 	handle.RobotsTXT = make(map[string]string)
 	return handle
 }
