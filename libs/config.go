@@ -14,8 +14,8 @@ import (
 	"os"
 )
 
-type siteListItem struct {
-	Domain string `json:"domain"`
+type SiteListItem struct {
+	Domain    string `json:"domain"`
 	StartPath string `json:"start-path"`
 }
 
@@ -37,15 +37,27 @@ type collyConfig struct {
 	SqlitePath string `json:"sqlite_path"`
 }
 
-// SiteList : 
-var SiteList []siteListItem
+const (
+	configFileName   string = "/config.json"
+	siteListFileName string = "/sites.json"
+)
+
+var ConfigPath string
+
+// SiteList :
+var SiteList []SiteListItem
 
 // Config : Global Settings for butterfly from config.json
 var Config configStruct
 
-// ReadSiteList : 
-func ReadSiteList(configPath string) {
-	jsonFile, err := os.Open(configPath + "/sites.json")
+// Initiate : Load configure file to Config
+func Initiate() {
+	readSiteList()
+	readConfig()
+}
+
+func readSiteList() {
+	jsonFile, err := os.Open(ConfigPath + siteListFileName)
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)
@@ -53,15 +65,14 @@ func ReadSiteList(configPath string) {
 	DeBug("Load JSON Initialization", err)
 }
 
-// ModifySiteList : 
-func ModifySiteList(newData []siteListItem) {
-	file, _ := json.Marshal(newData)
-	_ = ioutil.WriteFile("test.json", file, 0644)
+// WriteSiteList :
+func WriteSiteList() {
+	file, _ := json.Marshal(SiteList)
+	_ = ioutil.WriteFile(ConfigPath+siteListFileName, file, 0644)
 }
 
-// ReadConfig : Load configure file to Config
-func ReadConfig(configPath string) {
-	jsonFile, err := os.Open(configPath + "/config.json")
+func readConfig() {
+	jsonFile, err := os.Open(ConfigPath + configFileName)
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)

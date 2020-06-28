@@ -39,16 +39,40 @@ func usage() {
 }
 
 func addSite(domain string) {
-	fmt.Println(domain)
+	var newSite butterfly.SiteListItem
+	newSite.Domain = domain
+	_, exists := butterfly.FindInSlice(butterfly.SiteList, newSite)
+	if !exists {
+		butterfly.SiteList = append(butterfly.SiteList, newSite)
+	} else {
+		fmt.Printf("%s already existed in SiteList.\n", domain)
+	}
+	butterfly.WriteSiteList()
+	os.Exit(0)
 }
 
 func deleteSite(domain string) {
-	fmt.Println(domain)
+	var newSiteList []butterfly.SiteListItem
+	var newSite butterfly.SiteListItem
+	newSite.Domain = domain
+	index, exists := butterfly.FindInSlice(butterfly.SiteList, newSite)
+	if exists {
+		for i, item := range butterfly.SiteList {
+			if i != index {
+				newSiteList = append(newSiteList, item)
+			}
+		}
+		butterfly.SiteList = newSiteList
+	} else {
+		fmt.Printf("%s not exists in SiteList.\n", domain)
+	}
+	butterfly.WriteSiteList()
+	os.Exit(0)
 }
 
 func fly() {
-	for i := range butterfly.SiteList {
-		go client.Fetch(butterfly.SiteList[i].Domain + butterfly.SiteList[i].StartPath)
+	for _, item := range butterfly.SiteList {
+		go client.Fetch(item.Domain + item.StartPath)
 	}
 }
 
@@ -62,9 +86,7 @@ func main() {
 	} else {
 		configPathRoot = osUser.HomeDir
 	}
-	configPath := fmt.Sprintf("%s/.config/butterfly", configPathRoot)
-	butterfly.ReadConfig(configPath)
-	butterfly.ReadSiteList(configPath)
+	butterfly.ConfigPath = fmt.Sprintf("%s/.config/butterfly", configPathRoot)
 	client = butterfly.NewBody()
 
 	if addSiteValue != "" {

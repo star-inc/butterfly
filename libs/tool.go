@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -88,4 +89,20 @@ func RemoveChildNode(rootNode *html.Node, removeNode *html.Node) {
 			RemoveChildNode(item, removeNode)
 		}
 	}
+}
+
+// FindInSlice :
+func FindInSlice(slice interface{}, value interface{}) (int, bool) {
+	s := reflect.ValueOf(slice)
+
+	if s.Kind() != reflect.Slice {
+		panic("SliceExists() given a non-slice type")
+	}
+
+	for i := 0; i < s.Len(); i++ {
+		if s.Index(i).Interface() == value {
+			return i, true
+		}
+	}
+	return -1, false
 }
