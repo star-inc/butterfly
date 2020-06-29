@@ -115,5 +115,5 @@ func NormalizeURI(URI string) (string, *url.URL) {
 		handleURI.Scheme = "http"
 	}
 
-	return fmt.Sprintf("%s://%s/%s", handleURI.Scheme, handleURI.Host, handleURI.Path), handleURI
+	return fmt.Sprintf("%s:/%s/%s", handleURI.Scheme, handleURI.Host, handleURI.Path), handleURI
 }
