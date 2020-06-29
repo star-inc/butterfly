@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -105,4 +106,14 @@ func FindInSlice(slice interface{}, value interface{}) (int, bool) {
 		}
 	}
 	return -1, false
+}
+
+func NormalizeURI(URI string) (string, *url.URL) {
+	handleURI, _ := url.Parse(URI)
+
+	if handleURI.Scheme == "" {
+		handleURI.Scheme = "http"
+	}
+
+	return fmt.Sprintf("%s://%s/%s", handleURI.Scheme, handleURI.Host, handleURI.Path), handleURI
 }

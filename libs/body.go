@@ -57,20 +57,13 @@ func (handle *Handles) setStorage(domain string) {
 }
 
 func (handle *Handles) collect(uri string) *VioletDataStruct {
+	var queryURL *url.URL
 	data := new(VioletDataStruct)
 
-	data.URI = uri
-	queryURL, _ := url.Parse(uri)
-
-	if queryURL.Scheme == "" {
-		data.URI = fmt.Sprintf("http:%s", uri)
-		queryURL, _ = url.Parse(data.URI)
-	}
+	data.URI, queryURL = NormalizeURI(uri)
+	data.ID = fmt.Sprintf("%x", md5.Sum([]byte(data.URI)))
 
 	fmt.Println("Collecting", data.URI)
-
-	signature := md5.Sum([]byte(data.URI))
-	data.ID = fmt.Sprintf("%x", signature)
 
 	if _, exists := handle.RobotsTXT[queryURL.Host]; !exists {
 		handle.RobotsTXT[queryURL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", queryURL.Scheme, queryURL.Host), 0)

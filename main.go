@@ -37,7 +37,7 @@ func usage() {
 	fmt.Print("\t\t(c) 2020 Star Inc. https://starinc.xyz\n\n")
 	fmt.Print("\nOptional argument:\n\n")
 	flag.PrintDefaults()
-	fmt.Print("\n")
+	fmt.Print("  list\n\tShow Site List\n\n")
 }
 
 func getConfigPath() string {
