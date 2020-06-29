@@ -10,6 +10,7 @@ package butterfly
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -48,8 +49,17 @@ var Config configStruct
 
 // Initiate : Load configure file to Config
 func Initiate() {
-	readSiteList()
 	readConfig()
+	readSiteList()
+}
+
+func readConfig() {
+	jsonFile, err := os.Open(ConfigPath + configFileName)
+	DeBug("Get JSON config", err)
+	defer jsonFile.Close()
+	srcJSON, _ := ioutil.ReadAll(jsonFile)
+	err = json.Unmarshal(srcJSON, &Config)
+	DeBug("Load JSON Initialization", err)
 }
 
 func readSiteList() {
@@ -61,17 +71,43 @@ func readSiteList() {
 	DeBug("Load JSON Initialization", err)
 }
 
+func ShowSiteList() {
+	for _, siteURI := range SiteList {
+		fmt.Println(siteURI)
+	}
+	os.Exit(0)
+}
+
+func AddSite(siteURI string) {
+	_, exists := FindInSlice(SiteList, siteURI)
+	if !exists {
+		SiteList = append(SiteList, siteURI)
+	} else {
+		fmt.Printf("%s already existed in SiteList.\n", siteURI)
+	}
+	WriteSiteList()
+	os.Exit(0)
+}
+
+func DeleteSite(siteURI string) {
+	var newSiteList []string
+	index, exists := FindInSlice(SiteList, siteURI)
+	if exists {
+		for i, item := range SiteList {
+			if i != index {
+				newSiteList = append(newSiteList, item)
+			}
+		}
+		SiteList = newSiteList
+	} else {
+		fmt.Printf("%s not exists in SiteList.\n", siteURI)
+	}
+	WriteSiteList()
+	os.Exit(0)
+}
+
 // WriteSiteList :
 func WriteSiteList() {
 	file, _ := json.Marshal(SiteList)
 	_ = ioutil.WriteFile(ConfigPath+siteListFileName, file, 0644)
-}
-
-func readConfig() {
-	jsonFile, err := os.Open(ConfigPath + configFileName)
-	DeBug("Get JSON config", err)
-	defer jsonFile.Close()
-	srcJSON, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(srcJSON, &Config)
-	DeBug("Load JSON Initialization", err)
 }

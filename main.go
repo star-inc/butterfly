@@ -24,53 +24,20 @@ var (
 )
 
 func init() {
-	flag.StringVar(&addSiteValue, "add", "", "the action code")
-	flag.StringVar(&deleteSiteValue, "del", "", "the action code")
+	flag.StringVar(&addSiteValue, "add", "", "Append URL into Site List")
+	flag.StringVar(&deleteSiteValue, "del", "", "Remove URL from Site List")
 	flag.Usage = usage
 }
 
 func usage() {
-	fmt.Println("\n\tButterfly")
-	fmt.Println("\t ===== ")
-	fmt.Println("\n\tThe web crawler base on Apache Solr for StarStart!")
-	fmt.Printf("\n\tUsage: %s <URI>\n\n", os.Args[0])
+	fmt.Println("\nButterfly")
+	fmt.Println("=========")
+	fmt.Println("\nThe web crawler base on Apache Solr for StarStart!")
+	fmt.Printf("\nUsage: %s start\n\n", os.Args[0])
 	fmt.Print("\t\t(c) 2020 Star Inc. https://starinc.xyz\n\n")
+	fmt.Print("\nOptional argument:\n\n")
 	flag.PrintDefaults()
-}
-
-func showSiteList() {
-	for _, siteURI := range butterfly.SiteList {
-		fmt.Println(siteURI)
-	}
-	os.Exit(0)
-}
-
-func addSite(siteURI string) {
-	_, exists := butterfly.FindInSlice(butterfly.SiteList, siteURI)
-	if !exists {
-		butterfly.SiteList = append(butterfly.SiteList, siteURI)
-	} else {
-		fmt.Printf("%s already existed in SiteList.\n", siteURI)
-	}
-	butterfly.WriteSiteList()
-	os.Exit(0)
-}
-
-func deleteSite(siteURI string) {
-	var newSiteList []string
-	index, exists := butterfly.FindInSlice(butterfly.SiteList, siteURI)
-	if exists {
-		for i, item := range butterfly.SiteList {
-			if i != index {
-				newSiteList = append(newSiteList, item)
-			}
-		}
-		butterfly.SiteList = newSiteList
-	} else {
-		fmt.Printf("%s not exists in SiteList.\n", siteURI)
-	}
-	butterfly.WriteSiteList()
-	os.Exit(0)
+	fmt.Print("\n")
 }
 
 func getConfigPath() string {
@@ -91,11 +58,11 @@ func main() {
 	client = butterfly.NewBody()
 
 	if addSiteValue != "" {
-		addSite(addSiteValue)
+		butterfly.AddSite(addSiteValue)
 	}
 
 	if deleteSiteValue != "" {
-		deleteSite(deleteSiteValue)
+		butterfly.DeleteSite(deleteSiteValue)
 	}
 
 	if flag.Arg(0) == "start" {
@@ -103,7 +70,7 @@ func main() {
 			client.Fetch(siteURI)
 		}
 	} else if flag.Arg(0) == "list" {
-		showSiteList()
+		butterfly.ShowSiteList()
 	} else {
 		usage()
 	}
