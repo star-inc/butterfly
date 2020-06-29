@@ -83,19 +83,22 @@ func ShowSiteList() {
 }
 
 func AddSite(siteURI string) {
-	_, exists := FindInSlice(SiteList, siteURI)
+	URI, _ := NormalizeURI(siteURI)
+	_, exists := FindInSlice(SiteList, URI)
 	if !exists {
-		SiteList = append(SiteList, siteURI)
+		SiteList = append(SiteList, URI)
+		fmt.Println("Successful.")
 	} else {
-		fmt.Printf("%s already existed in SiteList.\n", siteURI)
+		fmt.Printf("%s already existed in SiteList.\n", URI)
 	}
 	WriteSiteList()
 	os.Exit(0)
 }
 
 func DeleteSite(siteURI string) {
+	URI, _ := NormalizeURI(siteURI)
 	var newSiteList []string
-	index, exists := FindInSlice(SiteList, siteURI)
+	index, exists := FindInSlice(SiteList, URI)
 	if exists {
 		for i, item := range SiteList {
 			if i != index {
@@ -103,8 +106,9 @@ func DeleteSite(siteURI string) {
 			}
 		}
 		SiteList = newSiteList
+		fmt.Println("Successful.")
 	} else {
-		fmt.Printf("%s not exists in SiteList.\n", siteURI)
+		fmt.Printf("%s not exists in SiteList.\n", URI)
 	}
 	WriteSiteList()
 	os.Exit(0)
