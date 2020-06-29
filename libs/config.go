@@ -49,6 +49,10 @@ var Config configStruct
 
 // Initiate : Load configure file to Config
 func Initiate() {
+	if _, err := os.Stat(ConfigPath); os.IsNotExist(err) {
+		err = os.MkdirAll(ConfigPath, 0755)
+		DeBug("Config Initiate create directory", err)
+	}
 	readConfig()
 	readSiteList()
 }
