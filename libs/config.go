@@ -14,11 +14,6 @@ import (
 	"os"
 )
 
-type SiteListItem struct {
-	Domain    string `json:"domain"`
-	StartPath string `json:"start-path"`
-}
-
 type configStruct struct {
 	Name        string      `json:"name"`
 	ForcusOnURI bool        `json:"forcus-on-uri"`
@@ -42,10 +37,11 @@ const (
 	siteListFileName string = "/sites.json"
 )
 
+// ConfigPath :
 var ConfigPath string
 
 // SiteList :
-var SiteList []SiteListItem
+var SiteList []string
 
 // Config : Global Settings for butterfly from config.json
 var Config configStruct
