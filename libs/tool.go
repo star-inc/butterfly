@@ -18,32 +18,32 @@ import (
 	"os/exec"
 	"reflect"
 	"strings"
-	"time"
 
 	"golang.org/x/net/html"
 )
 
-// HTTPGet :
-func HTTPGet(url string, recovery int) string {
+// HTTPGet : Get WWW resources from Internet
+func HTTPGet(url string) string {
 	var output string
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
-	DeBug("GenRequest", err)
-	req.Header.Set("User-Agent", Config.UserAgent)
-	resp, err := client.Do(req)
-	if err == nil {
-		body, err := ioutil.ReadAll(resp.Body)
-		DeBug("ReadHTML", err)
-		output = string(body)
-	} else {
-		if recovery == 0 {
-			time.Sleep(time.Duration(2) * time.Second)
-			HTTPGet(url, 1)
-		} else {
-			DeBug("GetHTTP", err)
+	for i := 0; i < 2; i++ {
+		output = func(url string) string {
+			client := new(http.Client)
+			request, err := http.NewRequest("GET", url, nil)
+			DeBug("Generate Request", err)
+			request.Header.Set("User-Agent", Config.UserAgent)
+			response, err := client.Do(request)
+			if err != nil {
+				return ""
+			}
+			defer response.Body.Close()
+			body, err := ioutil.ReadAll(response.Body)
+			DeBug("Read HTML", err)
+			return string(body)
+		}(url)
+		if output != "" {
+			break
 		}
 	}
-	resp.Body.Close()
 	return output
 }
 
@@ -56,8 +56,8 @@ func DeBug(where string, err error) bool {
 	return true
 }
 
-// ReplaceSyntaxs : Remove space and syntax
-func ReplaceSyntaxs(rawString string, filled string) string {
+// ReplaceHTMLSyntaxes : Remove space and HTML syntaxes
+func ReplaceHTMLSyntaxes(rawString string, filled string) string {
 	var output bytes.Buffer
 	rawString = strings.ReplaceAll(rawString, " ", "\x1e")
 	rawString = strings.ReplaceAll(rawString, "\t", "\x1e")

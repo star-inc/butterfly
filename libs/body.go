@@ -65,11 +65,11 @@ func (handle *Handles) collect(uri string) *VioletDataStruct {
 	fmt.Println("Collecting", data.URI)
 
 	if _, exists := handle.RobotsTXT[queryURL.Host]; !exists {
-		handle.RobotsTXT[queryURL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", queryURL.Scheme, queryURL.Host), 0)
+		handle.RobotsTXT[queryURL.Host] = HTTPGet(fmt.Sprintf("%s://%s/robots.txt", queryURL.Scheme, queryURL.Host))
 	}
 
 	if robots, _ := robotstxt.FromString(handle.RobotsTXT[queryURL.Host]); robots.TestAgent(queryURL.Path, Config.Name) {
-		capturedHTML := HTTPGet(data.URI, 0)
+		capturedHTML := HTTPGet(data.URI)
 
 		reader := strings.NewReader(capturedHTML)
 		doc, err := goquery.NewDocumentFromReader(reader)
@@ -84,7 +84,7 @@ func (handle *Handles) collect(uri string) *VioletDataStruct {
 		doc.Find("iframe").Remove()   // Remove Iframe codes
 		doc.Find("meta").Remove()     // Remove Meta codes
 
-		data.Content = ReplaceSyntaxs(doc.Text(), " ")
+		data.Content = ReplaceHTMLSyntaxes(doc.Text(), " ")
 	} else {
 		forbiddenMsg := "> Forbidden by robots.txt"
 		data.Content = forbiddenMsg
