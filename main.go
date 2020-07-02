@@ -21,7 +21,6 @@ import (
 var (
 	addSiteValue    string
 	deleteSiteValue string
-	client          *butterfly.Handles
 )
 
 func init() {
@@ -70,7 +69,7 @@ func main() {
 		taskList.Add(len(butterfly.SiteList))
 		for _, siteURI := range butterfly.SiteList {
 			go func(siteURI string, taskList *sync.WaitGroup) {
-				client = butterfly.NewBody()
+				client := butterfly.NewBody()
 				client.Fetch(siteURI)
 				taskList.Done()
 			}(siteURI, taskList)
