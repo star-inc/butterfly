@@ -32,7 +32,6 @@ type Handles struct {
 
 // NewBody : Create body for butterfly
 func NewBody() *Handles {
-	Initiate()
 	handle := new(Handles)
 	handle.Colly = colly.NewCollector(
 		colly.UserAgent(Config.UserAgent),

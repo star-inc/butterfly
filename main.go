@@ -55,6 +55,7 @@ func getConfigPath() string {
 
 func main() {
 	butterfly.ConfigPath = getConfigPath()
+	butterfly.Initiate()
 
 	if addSiteValue != "" {
 		butterfly.AddSite(addSiteValue)
