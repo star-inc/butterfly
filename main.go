@@ -56,7 +56,6 @@ func getConfigPath() string {
 
 func main() {
 	butterfly.ConfigPath = getConfigPath()
-	client = butterfly.NewBody()
 
 	if addSiteValue != "" {
 		butterfly.AddSite(addSiteValue)
@@ -71,6 +70,7 @@ func main() {
 		taskList.Add(len(butterfly.SiteList))
 		for _, siteURI := range butterfly.SiteList {
 			go func(siteURI string, taskList *sync.WaitGroup) {
+				client = butterfly.NewBody()
 				client.Fetch(siteURI)
 				taskList.Done()
 			}(siteURI, taskList)
