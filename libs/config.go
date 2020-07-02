@@ -38,19 +38,19 @@ const (
 	siteListFileName string = "/sites.json"
 )
 
-// ConfigPath :
-var ConfigPath string
+var configPath string
 
-// SiteList :
+// SiteList : The website list that will be fetched by the butterfly
 var SiteList []string
 
 // Config : Global Settings for butterfly from config.json
 var Config configStruct
 
 // Initiate : Load configure file to Config
-func Initiate() {
-	if _, err := os.Stat(ConfigPath); os.IsNotExist(err) {
-		err = os.MkdirAll(ConfigPath, 0755)
+func Initiate(path string) {
+	configPath = path
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		err = os.MkdirAll(configPath, 0755)
 		DeBug("Config Initiate create directory", err)
 	}
 	readConfig()
@@ -58,7 +58,7 @@ func Initiate() {
 }
 
 func readConfig() {
-	jsonFile, err := os.Open(ConfigPath + configFileName)
+	jsonFile, err := os.Open(configPath + configFileName)
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)
@@ -67,7 +67,7 @@ func readConfig() {
 }
 
 func readSiteList() {
-	jsonFile, err := os.Open(ConfigPath + siteListFileName)
+	jsonFile, err := os.Open(configPath + siteListFileName)
 	DeBug("Get JSON config", err)
 	defer jsonFile.Close()
 	srcJSON, _ := ioutil.ReadAll(jsonFile)
@@ -75,6 +75,7 @@ func readSiteList() {
 	DeBug("Load JSON Initialization", err)
 }
 
+// ShowSiteList : To show the website list that will be fetched
 func ShowSiteList() {
 	for _, siteURI := range SiteList {
 		fmt.Println(siteURI)
@@ -82,6 +83,7 @@ func ShowSiteList() {
 	os.Exit(0)
 }
 
+// AddSite : Add a website for fetching
 func AddSite(siteURI string) {
 	URI, _ := NormalizeURI(siteURI)
 	_, exists := FindInSlice(SiteList, URI)
@@ -95,6 +97,7 @@ func AddSite(siteURI string) {
 	os.Exit(0)
 }
 
+// DeleteSite : Remove a website from the website list.
 func DeleteSite(siteURI string) {
 	URI, _ := NormalizeURI(siteURI)
 	var newSiteList []string
@@ -114,8 +117,13 @@ func DeleteSite(siteURI string) {
 	os.Exit(0)
 }
 
-// WriteSiteList :
+// EditConfigWithTextEditor : Call the text editor to modify the config file.
+func EditConfigWithTextEditor() {
+	CallTextEditor(configPath + configFileName)
+}
+
+// WriteSiteList : Make the butterfly write the website list after it was modified
 func WriteSiteList() {
 	file, _ := json.Marshal(SiteList)
-	_ = ioutil.WriteFile(ConfigPath+siteListFileName, file, 0644)
+	_ = ioutil.WriteFile(configPath+siteListFileName, file, 0644)
 }

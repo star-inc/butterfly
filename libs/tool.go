@@ -14,6 +14,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+	"os/exec"
 	"reflect"
 	"strings"
 	"time"
@@ -92,7 +94,7 @@ func RemoveChildNode(rootNode *html.Node, removeNode *html.Node) {
 	}
 }
 
-// FindInSlice :
+// FindInSlice : Find out an item if exists in a slice
 func FindInSlice(slice interface{}, value interface{}) (int, bool) {
 	s := reflect.ValueOf(slice)
 
@@ -108,6 +110,7 @@ func FindInSlice(slice interface{}, value interface{}) (int, bool) {
 	return -1, false
 }
 
+// NormalizeURI : Reformat a URI as the unique standard
 func NormalizeURI(URI string) (string, *url.URL) {
 	handleURI, _ := url.Parse(URI)
 
@@ -116,4 +119,29 @@ func NormalizeURI(URI string) (string, *url.URL) {
 	}
 
 	return handleURI.String(), handleURI
+}
+
+// CallTextEditor : To call a text editor
+func CallTextEditor(filePath string) {
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		editor = func() string {
+			editors := []string{"vim", "vi", "emacs", "nano"}
+			for _, editor := range editors {
+				if r, _ := exec.LookPath(editor); r != "" {
+					return editor
+				}
+			}
+			return ""
+		}()
+		if editor == "" {
+			fmt.Println("No text editor found.")
+			return
+		}
+	}
+	cmd := exec.Command(editor, filePath)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
 }

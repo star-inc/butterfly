@@ -12,12 +12,12 @@ import (
 	"github.com/star-inc/butterfly-solr/solr"
 )
 
-// SolrHandle :
+// SolrHandle : The interface for Solr Client
 type SolrHandle struct {
 	Client *solr.SolrInterface
 }
 
-// NewSolrClient :
+// NewSolrClient : Create interface for Solr Client
 func NewSolrClient() *SolrHandle {
 	handle := new(SolrHandle)
 	client, err := solr.NewSolrInterface(Config.Solr.URI, Config.Solr.Collection)
@@ -26,7 +26,7 @@ func NewSolrClient() *SolrHandle {
 	return handle
 }
 
-// Query :
+// Query : Let Solr Client query a request from the server side
 func (handle *SolrHandle) Query(request string) *solr.Collection {
 	query := solr.NewQuery()
 	query.Q(request)
@@ -35,7 +35,7 @@ func (handle *SolrHandle) Query(request string) *solr.Collection {
 	return output.Results
 }
 
-// Update :
+// Update : Upload Violet Data to the server side
 func (handle *SolrHandle) Update(data *VioletDataStruct) {
 	_, err := handle.Client.UpdateDoc(data)
 	DeBug("Solr Update", err)

@@ -37,7 +37,8 @@ func usage() {
 	fmt.Print("\t\t(c) 2020 Star Inc. https://starinc.xyz\n\n")
 	fmt.Print("\nOptional argument:\n\n")
 	flag.PrintDefaults()
-	fmt.Print("  list\n\tShow Site List\n\n")
+	fmt.Println("  list\n\tShow Site List")
+	fmt.Print("  config\n\tEdit the config file\n\n")
 }
 
 func getConfigPath() string {
@@ -54,8 +55,8 @@ func getConfigPath() string {
 }
 
 func main() {
-	butterfly.ConfigPath = getConfigPath()
-	butterfly.Initiate()
+	configPath := getConfigPath()
+	butterfly.Initiate(configPath)
 
 	if addSiteValue != "" {
 		butterfly.AddSite(addSiteValue)
@@ -65,7 +66,8 @@ func main() {
 		butterfly.DeleteSite(deleteSiteValue)
 	}
 
-	if flag.Arg(0) == "start" {
+	switch flag.Arg(0) {
+	case "start":
 		taskList := new(sync.WaitGroup)
 		taskList.Add(len(butterfly.SiteList))
 		for _, siteURI := range butterfly.SiteList {
@@ -76,9 +78,14 @@ func main() {
 			}(siteURI, taskList)
 		}
 		taskList.Wait()
-	} else if flag.Arg(0) == "list" {
+		break
+	case "list":
 		butterfly.ShowSiteList()
-	} else {
+		break
+	case "config":
+		butterfly.EditConfigWithTextEditor()
+		break
+	default:
 		usage()
 	}
 }
