@@ -68,7 +68,7 @@ func main() {
 
 	if flag.Arg(0) == "start" {
 		taskList := new(sync.WaitGroup)
-		taskList.Add(100)
+		taskList.Add(len(butterfly.SiteList))
 		for _, siteURI := range butterfly.SiteList {
 			go func(siteURI string, taskList *sync.WaitGroup) {
 				client.Fetch(siteURI)
