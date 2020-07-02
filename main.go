@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"sync"
 
 	butterfly "./libs"
 )
@@ -66,9 +67,15 @@ func main() {
 	}
 
 	if flag.Arg(0) == "start" {
+		taskList := new(sync.WaitGroup)
+		taskList.Add(100)
 		for _, siteURI := range butterfly.SiteList {
-			client.Fetch(siteURI)
+			go func(siteURI string, taskList *sync.WaitGroup) {
+				client.Fetch(siteURI)
+				taskList.Done()
+			}(siteURI, taskList)
 		}
+		taskList.Wait()
 	} else if flag.Arg(0) == "list" {
 		butterfly.ShowSiteList()
 	} else {
