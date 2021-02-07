@@ -11,11 +11,17 @@ cat <<EOF
 [The software licensed under Mozilla Public License Version 2.0]
 EOF
 
-configfile=".butterfly_config.json"
+if [ "$USER" = "root" ]; then
+    config_root="/etc"
+else
+    config_root="$HOME/.config/butterfly"
+fi
+
+configfile="config.json"
 configfile_sample="config.sample.json"
 
 echo ""
-echo "> Welcome to help us improve Butterfly"
+echo "> Welcome to help us improving Butterfly"
 echo ""
 echo "https://github.com/star-inc/butterfly"
 
@@ -29,9 +35,14 @@ go get -u github.com/PuerkitoBio/goquery
 go get -u github.com/temoto/robotstxt
 
 
+if [ ! -d $config_root ]; then
+    echo "Creating directory \`$config_root\`"
+    mkdir -p $config_root
+fi
+
 if [ ! -f $configfile ]; then
-    echo "Coping \`$configfile_sample\` to \`$configfile\`"
-    cat $configfile_sample > $configfile
+    echo "Coping \`$configfile_sample\` to \`$config_root/$configfile\`"
+    cat $configfile_sample > $config_root/$configfile
 fi
 
 echo ""

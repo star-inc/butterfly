@@ -12,31 +12,51 @@ The World-Wide-Web crawler for Apache Solr
 
 Get the execute file official build via [GitHub Releases](https://github.com/star-inc/butterfly/releases).
 
-No install required,
+No installation required,
 but you can put it on the directory your terminal $PATH variable points for convenient.
 
 Eventually,
-set up your config file (default name: `.butterfly_config.json`),
+set up your config file (Command: `butterfly config`),
 and move it to the directory where you want to execute `butterfly` command.
 
 ## Usage
 
-### Warning
+### Add a website
 
-The config file must be existed under the directory you execute `butterfly` command.
+    butterfly -add <URI>
+
+The `<URI>` is a variable, please fill in the URL you hope to fetch the website at first time.
+
+It will be add into a list that the butterfly will fetch it.
+
+### Show the website list
+
+    butterfly list
+
+It will display the URL list of websites that the butterfly will visit at the first time.
+
+> NOTICE: If the butterfly had been fetched the URL, it will ignore the URL next time.
+>  
+> But if you hope to re-fetch the website, please delete the database of this website,
+> and restart the butterfly again.
+
+### Delete a website from the list
+
+    butterfly -add <URI>
+
+The `<URI>` is the variable that the website URL you want to remove from the list.
 
 ### Execute
 
-    ./butterfly <URI>
+    butterfly start
 
-The URI is a variable,
-that the website URL you want to crawl on start.
+The butterfly will fly to fetch the websites in the list.
 
 ## Developmet Environment
 
 ### Requirement
 
-Butterfly requires [Go Language Compiler](https://golang.org/dl) >= 1.13
+Butterfly requires [GoLang](https://golang.org/dl) >= 1.13
 
 Please check your `go version` or install the latest version.
 
