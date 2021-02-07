@@ -16,11 +16,11 @@ import (
 )
 
 type configStruct struct {
-	Name        string      `json:"name"`
-	ForcusOnURI bool        `json:"forcus-on-uri"`
-	UserAgent   string      `json:"user-agent"`
-	Solr        solrConfig  `json:"solr"`
-	Colly       collyConfig `json:"colly"`
+	Name             string      `json:"name"`
+	FocusOnURIDomain bool        `json:"focus-on-uri-domain"`
+	UserAgent        string      `json:"user-agent"`
+	Solr             solrConfig  `json:"solr"`
+	Colly            collyConfig `json:"colly"`
 }
 
 type solrConfig struct {

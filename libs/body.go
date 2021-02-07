@@ -100,7 +100,7 @@ func (handle *Handles) Fetch(uri string) {
 	handle.setStorage(queryURL.Host)
 	defer handle.CollyStorage.Close()
 
-	if Config.ForcusOnURI {
+	if Config.FocusOnURIDomain {
 		handle.Colly.AllowedDomains = []string{queryURL.Host}
 	}
 
