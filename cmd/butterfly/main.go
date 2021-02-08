@@ -15,7 +15,7 @@ import (
 	"os/user"
 	"sync"
 
-	butterfly "github.com/star-inc/butterfly/pkg"
+	butterfly "github.com/star-inc/butterfly/internal"
 )
 
 var (

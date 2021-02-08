@@ -1,5 +1,5 @@
 /*
-Package butterfly : The library for butterfly
+Package butterfly: The library for butterfly
 
 Copyright(c) 2020 Star Inc. All Rights Reserved.
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -22,7 +22,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// HTTPGet : Get WWW resources from Internet
+// HTTPGet: Get WWW resources from Internet
 func HTTPGet(url string) string {
 	var output string
 	for i := 0; i < 2; i++ {
@@ -47,7 +47,7 @@ func HTTPGet(url string) string {
 	return output
 }
 
-// DeBug : Print errors for debug and report
+// DeBug: Print errors for debug and report
 func DeBug(where string, err error) bool {
 	if err != nil {
 		fmt.Printf("Butterfly Error #%s\nReason:\n%s\n\n", where, err)
@@ -56,8 +56,8 @@ func DeBug(where string, err error) bool {
 	return true
 }
 
-// ReplaceHTMLSyntaxes : Remove space and HTML syntaxes
-func ReplaceHTMLSyntaxes(rawString string, filled string) string {
+// ReplaceHTMLSyntax: Remove space and HTML syntax
+func ReplaceHTMLSyntax(rawString string, filled string) string {
 	var output bytes.Buffer
 	rawString = strings.ReplaceAll(rawString, " ", "\x1e")
 	rawString = strings.ReplaceAll(rawString, "\t", "\x1e")
@@ -71,7 +71,7 @@ func ReplaceHTMLSyntaxes(rawString string, filled string) string {
 	return output.String()
 }
 
-// RemoveChildNode : Remove all child html node selected
+// RemoveChildNode: Remove all child html node selected
 func RemoveChildNode(rootNode *html.Node, removeNode *html.Node) {
 	foundNode := false
 	checkNode := make(map[int]*html.Node)
@@ -94,7 +94,7 @@ func RemoveChildNode(rootNode *html.Node, removeNode *html.Node) {
 	}
 }
 
-// FindInSlice : Find out an item if exists in a slice
+// FindInSlice: Find out an item if exists in a slice
 func FindInSlice(slice interface{}, value interface{}) (int, bool) {
 	s := reflect.ValueOf(slice)
 
@@ -110,7 +110,7 @@ func FindInSlice(slice interface{}, value interface{}) (int, bool) {
 	return -1, false
 }
 
-// NormalizeURI : Reformat a URI as the unique standard
+// NormalizeURI: Reformat a URI as the unique standard
 func NormalizeURI(URI string) (string, *url.URL) {
 	handleURI, _ := url.Parse(URI)
 
@@ -121,7 +121,7 @@ func NormalizeURI(URI string) (string, *url.URL) {
 	return handleURI.String(), handleURI
 }
 
-// CallTextEditor : To call a text editor
+// CallTextEditor: To call a text editor
 func CallTextEditor(filePath string) {
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
