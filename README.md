@@ -1,6 +1,6 @@
 # Butterfly
 
-![Version](https://img.shields.io/badge/v1-OpenSource-3300AA.svg) ![License](https://img.shields.io/badge/license-MPL--2.0-FF6600.svg) ![Platform](https://img.shields.io/badge/base_on-StarStart!-11BAFF.svg) [![Code-Inspector_Score](https://www.code-inspector.com/project/5659/score/svg) ![Code-Inspector_Score](https://www.code-inspector.com/project/5659/status/svg)](https://frontend.code-inspector.com/public/project/5659/butterfly/dashboard)
+![Version](https://img.shields.io/badge/v2-OpenSource-FF00AA.svg) ![License](https://img.shields.io/badge/license-MPL--2.0-FF6600.svg) ![Platform](https://img.shields.io/badge/base_on-StarStart!-11BAFF.svg) [![Code-Inspector_Score](https://www.code-inspector.com/project/5659/score/svg) ![Code-Inspector_Score](https://www.code-inspector.com/project/5659/status/svg)](https://frontend.code-inspector.com/public/project/5659/butterfly/dashboard)
 
 > [[Violet](https://github.com/star-inc/violet)] + [[Butterfly](https://github.com/star-inc/butterfly)] = {[StarStart!](https://start.starinc.xyz)}
 
