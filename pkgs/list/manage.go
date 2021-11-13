@@ -2,6 +2,12 @@
 // Copyright(c) 2020 Star Inc. All Rights Reserved.
 // The software licensed under Mozilla Public License Version 2.0
 
-package config
+package list
 
-type EnvKey string
+func AddSite() {
+
+}
+
+func RemoveSite() {
+
+}

@@ -4,9 +4,14 @@
 
 package config
 
-const (
-	EnvMysqlDSN      EnvKey = "MYSQL_DSN"
-	EnvRedisAddress  EnvKey = "REDIS_ADDRESS"
-	EnvRedisPassword EnvKey = "REDIS_PASSWORD"
-	EnvRedisDatabase EnvKey = "REDIS_DBNAME"
+import (
+	"github.com/go-redis/redis/v8"
 )
+
+func GetRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     RedisAddress,
+		Password: RedisPassword,
+		DB:       RedisDatabase,
+	})
+}

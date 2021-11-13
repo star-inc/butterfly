@@ -3,3 +3,10 @@
 // The software licensed under Mozilla Public License Version 2.0
 
 package config
+
+var (
+	MysqlDSN      string
+	RedisAddress  string
+	RedisPassword string
+	RedisDatabase int
+)
