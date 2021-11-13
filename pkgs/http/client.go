@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -21,7 +20,13 @@ const (
 )
 
 type Client struct {
-	BaseURL *url.URL
+	baseURL string
+}
+
+func NewHttpClient(baseURL string) *Client {
+	httpClient := new(Client)
+	httpClient.baseURL = baseURL
+	return httpClient
 }
 
 func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
@@ -35,7 +40,7 @@ func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
 
 func (c *Client) Do(method, uri string, data interface{}) (StatusCode, []byte) {
 	client := &http.Client{}
-	request := c.initRequest(method, uri, data.(io.Reader))
+	request := c.initRequest(method, c.baseURL+uri, data.(io.Reader))
 	if _, ok := data.(bytes.Buffer); ok {
 		request.Header.Add("Content-Type", "application/json; charset=utf-8")
 	} else if _, ok := data.(strings.Reader); ok {
