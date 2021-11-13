@@ -1,5 +1,5 @@
 /*
-Package butterfly: The library for butterfly
+Package butterfly The library for butterfly
 
 Copyright(c) 2020 Star Inc. All Rights Reserved.
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -40,13 +40,13 @@ const (
 
 var configPath string
 
-// SiteList: The website list that will be fetched by the butterfly
+// SiteList The website list that will be fetched by the butterfly
 var SiteList []string
 
-// Config: Global Settings for butterfly from config.json
+// Config Global Settings for butterfly from config.json
 var Config configStruct
 
-// Initiate: Load configure file to Config
+// Initiate Load configure file to Config
 func Initiate(path string) {
 	configPath = path
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
@@ -75,7 +75,7 @@ func readSiteList() {
 	DeBug("Load JSON Initialization", err)
 }
 
-// ShowSiteList: To show the website list that will be fetched
+// ShowSiteList To show the website list that will be fetched
 func ShowSiteList() {
 	for _, siteURI := range SiteList {
 		fmt.Println(siteURI)
@@ -83,7 +83,7 @@ func ShowSiteList() {
 	os.Exit(0)
 }
 
-// AddSite: Add a website for fetching
+// AddSite Add a website for fetching
 func AddSite(siteURI string) {
 	URI, _ := NormalizeURI(siteURI)
 	_, exists := FindInSlice(SiteList, URI)
@@ -97,7 +97,7 @@ func AddSite(siteURI string) {
 	os.Exit(0)
 }
 
-// DeleteSite: Remove a website from the website list.
+// DeleteSite Remove a website from the website list.
 func DeleteSite(siteURI string) {
 	URI, _ := NormalizeURI(siteURI)
 	var newSiteList []string
@@ -117,12 +117,12 @@ func DeleteSite(siteURI string) {
 	os.Exit(0)
 }
 
-// EditConfigWithTextEditor: Call the text editor to modify the config file.
+// EditConfigWithTextEditor Call the text editor to modify the config file.
 func EditConfigWithTextEditor() {
 	CallTextEditor(configPath + configFileName)
 }
 
-// WriteSiteList: Make the butterfly write the website list after it was modified
+// WriteSiteList Make the butterfly write the website list after it was modified
 func WriteSiteList() {
 	file, _ := json.Marshal(SiteList)
 	_ = ioutil.WriteFile(configPath+siteListFileName, file, 0644)

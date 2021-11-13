@@ -27,7 +27,7 @@ and move it to the directory where you want to execute `butterfly` command.
 
 The `<URI>` is a variable, please fill in the URL you hope to fetch the website at first time.
 
-It will be add into a list that the butterfly will fetch it.
+It will be added into a list that the butterfly will fetch it.
 
 ### Show the website list
 
@@ -52,11 +52,11 @@ The `<URI>` is the variable that the website URL you want to remove from the lis
 
 The butterfly will fly to fetch the websites in the list.
 
-## Developmet Environment
+## Development Environment
 
 ### Requirement
 
-Butterfly requires [GoLang](https://golang.org/dl) >= 1.13
+Butterfly requires [GoLang](https://golang.org/dl) >= 1.17
 
 Please check your `go version` or install the latest version.
 

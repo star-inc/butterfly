@@ -12,7 +12,7 @@ package butterfly
 // Schema XML: https://bit.ly/2I0QxF8
 // Usage: https://bit.ly/32r9Noz
 
-// VioletDataStruct: Data structure for Violet
+// VioletDataStruct Data structure for Violet
 type VioletDataStruct struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`

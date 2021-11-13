@@ -1,5 +1,5 @@
 /*
-Package butterfly: The library for butterfly
+Package butterfly The library for butterfly
 
 Copyright(c) 2020 Star Inc. All Rights Reserved.
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -22,7 +22,7 @@ import (
 	"github.com/velebak/colly-sqlite3-storage/colly/sqlite3"
 )
 
-// Handles: Define Handles Class
+// Handles Define Handles Class
 type Handles struct {
 	Colly        *colly.Collector
 	CollyStorage *sqlite3.Storage
@@ -30,7 +30,7 @@ type Handles struct {
 	RobotsTXT    map[string]string
 }
 
-// NewBody: Create body for butterfly
+// NewBody Create body for butterfly
 func NewBody() *Handles {
 	handle := new(Handles)
 	handle.Colly = colly.NewCollector(
@@ -48,7 +48,7 @@ func (handle *Handles) setStorage(domain string) {
 	}
 	path := fmt.Sprintf("%s%s.sqlite3", Config.Colly.SqlitePath, domain)
 	storage := &sqlite3.Storage{
-		Filename: path,
+		Filename path,
 	}
 	err := handle.Colly.SetStorage(storage)
 	DeBug("Colly setStorage", err)
@@ -94,7 +94,7 @@ func (handle *Handles) collect(uri string) *VioletDataStruct {
 	return data
 }
 
-// Fetch: Capture web pages on Internet and submit to Solr
+// Fetch Capture web pages on Internet and submit to Solr
 func (handle *Handles) Fetch(uri string) {
 	queryURL, _ := url.Parse(uri)
 	handle.setStorage(queryURL.Host)

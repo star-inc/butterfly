@@ -11,8 +11,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"os/user"
 	"sync"
 
 	butterfly "github.com/star-inc/butterfly/internal"
@@ -30,34 +28,12 @@ func init() {
 }
 
 func usage() {
-	fmt.Println("\nButterfly")
-	fmt.Println("=========")
-	fmt.Println("\nThe web crawler base on Apache Solr for StarStart!")
-	fmt.Printf("\nUsage: %s start\n\n", os.Args[0])
-	fmt.Print("\t\t(c) 2020 Star Inc. https://starinc.xyz\n\n")
+	fmt.Println("Butterfly - The web crawler base on Apache Solr for StarStart!")
+	fmt.Println("(c) 2020 Star Inc. https://starinc.xyz")
 	fmt.Print("\nOptional argument:\n\n")
-	flag.PrintDefaults()
-	fmt.Println("  list\n\tShow Site List")
-	fmt.Print("  config\n\tEdit the config file\n\n")
-}
-
-func getConfigPath() string {
-	var configPathRoot string
-	flag.Parse()
-	osUser, err := user.Current()
-	butterfly.DeBug("Get OS User", err)
-	if osUser.Username == "root" {
-		configPathRoot = "/etc"
-	} else {
-		configPathRoot = osUser.HomeDir
-	}
-	return fmt.Sprintf("%s/.config/butterfly", configPathRoot)
 }
 
 func main() {
-	configPath := getConfigPath()
-	butterfly.Initiate(configPath)
-
 	if addSiteValue != "" {
 		butterfly.AddSite(addSiteValue)
 	}
