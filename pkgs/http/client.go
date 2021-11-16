@@ -20,7 +20,8 @@ const (
 )
 
 type Client struct {
-	baseURL string
+	baseURL   string
+	userAgent string
 }
 
 func NewHttpClient(baseURL string) *Client {
@@ -29,12 +30,21 @@ func NewHttpClient(baseURL string) *Client {
 	return httpClient
 }
 
+func (c *Client) SetUserAgent(userAgent string) *Client {
+	c.userAgent = userAgent
+	return c
+}
+
 func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
 	request, err := http.NewRequest(method, uri, body)
 	if err != nil {
 		log.Panicln(err)
 	}
-	request.Header.Add("User-Agent", DefaultUserAgent)
+	if c.userAgent != "" {
+		request.Header.Add("User-Agent", c.userAgent)
+	} else {
+		request.Header.Add("User-Agent", DefaultUserAgent)
+	}
 	return request
 }
 
