@@ -72,7 +72,12 @@ func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
 func (c *Client) Do(method, uri string, data interface{}) (StatusCode, []byte) {
 	client := &http.Client{}
 	fullURI := c.baseURLGlue(uri)
-	request := c.initRequest(method, fullURI, data.(io.Reader))
+	var request *http.Request
+	if reader, ok := data.(io.Reader); ok {
+		request = c.initRequest(method, fullURI, reader)
+	} else {
+		request = c.initRequest(method, fullURI, nil)
+	}
 	if _, ok := data.(bytes.Buffer); ok {
 		request.Header.Add("Content-Type", "application/json; charset=utf-8")
 	} else if _, ok := data.(strings.Reader); ok {
