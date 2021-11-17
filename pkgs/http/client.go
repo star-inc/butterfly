@@ -22,14 +22,20 @@ const (
 )
 
 type Client struct {
-	baseURL   *url.URL
-	userAgent string
+	baseURL      *url.URL
+	userAgent    string
+	appendHeader http.Header
 }
 
 func NewHttpClient(baseURL string) *Client {
 	httpClient := new(Client)
 	httpClient.SetBaseURL(baseURL)
 	return httpClient
+}
+
+func (c *Client) AddHeader(name string, values []string) *Client {
+	c.appendHeader[name] = values
+	return c
 }
 
 func (c *Client) SetBaseURL(baseURL string) *Client {
@@ -56,15 +62,29 @@ func (c *Client) baseURLGlue(uri string) string {
 	}
 }
 
-func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
-	request, err := http.NewRequest(method, uri, body)
+func (c *Client) initRequest(method, fullURI string, data interface{}) *http.Request {
+	var err error
+	var request *http.Request
+	if reader, ok := data.(io.Reader); ok {
+		request, err = http.NewRequest(method, fullURI, reader)
+	} else {
+		request, err = http.NewRequest(method, fullURI, nil)
+	}
 	if err != nil {
 		log.Panicln(err)
+	}
+	if _, ok := data.(bytes.Buffer); ok {
+		request.Header.Add("Content-Type", "application/json; charset=utf-8")
+	} else if _, ok := data.(strings.Reader); ok {
+		request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	}
 	if c.userAgent != "" {
 		request.Header.Add("User-Agent", c.userAgent)
 	} else {
 		request.Header.Add("User-Agent", DefaultUserAgent)
+	}
+	for key, value := range c.appendHeader {
+		request.Header[key] = value
 	}
 	return request
 }
@@ -72,17 +92,7 @@ func (c *Client) initRequest(method, uri string, body io.Reader) *http.Request {
 func (c *Client) Do(method, uri string, data interface{}) (StatusCode, []byte) {
 	client := &http.Client{}
 	fullURI := c.baseURLGlue(uri)
-	var request *http.Request
-	if reader, ok := data.(io.Reader); ok {
-		request = c.initRequest(method, fullURI, reader)
-	} else {
-		request = c.initRequest(method, fullURI, nil)
-	}
-	if _, ok := data.(bytes.Buffer); ok {
-		request.Header.Add("Content-Type", "application/json; charset=utf-8")
-	} else if _, ok := data.(strings.Reader); ok {
-		request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	}
+	request := c.initRequest(method, fullURI, data)
 	response, err := client.Do(request)
 	if err != nil {
 		log.Panicln(err)
