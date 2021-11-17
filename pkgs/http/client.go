@@ -58,12 +58,17 @@ func (c *Client) SetUserAgent(userAgent string) *Client {
 }
 
 func (c *Client) baseURLGlue(uri string) string {
-	if strings.HasPrefix(uri, "http://") ||
-		strings.HasPrefix(uri, "https://") {
+	urlValues, err := url.Parse(uri)
+	if err != nil {
+		log.Panicln(err)
+	}
+	if urlValues.Scheme != "" {
 		return uri
 	} else {
 		newURL := *c.baseURL
-		newURL.Path = path.Join(newURL.Path, uri)
+		newURL.Path = path.Join(newURL.Path, urlValues.Path)
+		newURL.RawQuery = urlValues.RawQuery
+		newURL.RawFragment = urlValues.RawFragment
 		return newURL.String()
 	}
 }
