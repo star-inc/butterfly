@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -50,7 +51,7 @@ func (c *Client) baseURLGlue(uri string) string {
 		return uri
 	} else {
 		newURL := *c.baseURL
-		newURL.Path = uri
+		newURL.Path = path.Join(newURL.Path, uri)
 		return newURL.String()
 	}
 }
