@@ -30,6 +30,7 @@ type Client struct {
 func NewHttpClient(baseURL string) *Client {
 	httpClient := new(Client)
 	httpClient.SetBaseURL(baseURL)
+	httpClient.appendHeader = http.Header{}
 	return httpClient
 }
 
