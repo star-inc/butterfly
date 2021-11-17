@@ -29,9 +29,14 @@ type Client struct {
 
 func NewHttpClient(baseURL string) *Client {
 	httpClient := new(Client)
+	httpClient.Initialize()
 	httpClient.SetBaseURL(baseURL)
-	httpClient.appendHeader = http.Header{}
 	return httpClient
+}
+
+func (c *Client) Initialize() *Client {
+	c.appendHeader = http.Header{}
+	return c
 }
 
 func (c *Client) AddHeader(name string, values []string) *Client {
