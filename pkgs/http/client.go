@@ -73,14 +73,10 @@ func (c *Client) baseURLGlue(uri string) string {
 	}
 }
 
-func (c *Client) initRequest(method, fullURI string, data interface{}) *http.Request {
+func (c *Client) initRequest(method, fullURI string, data io.Reader) *http.Request {
 	var err error
 	var request *http.Request
-	if reader, ok := data.(io.Reader); ok {
-		request, err = http.NewRequest(method, fullURI, reader)
-	} else {
-		request, err = http.NewRequest(method, fullURI, nil)
-	}
+	request, err = http.NewRequest(method, fullURI, data)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -100,7 +96,7 @@ func (c *Client) initRequest(method, fullURI string, data interface{}) *http.Req
 	return request
 }
 
-func (c *Client) Do(method, uri string, data interface{}) (StatusCode, []byte) {
+func (c *Client) Do(method, uri string, data io.Reader) (StatusCode, []byte) {
 	client := &http.Client{}
 	fullURI := c.baseURLGlue(uri)
 	request := c.initRequest(method, fullURI, data)
@@ -124,18 +120,18 @@ func (c *Client) GET(uri string) (StatusCode, []byte) {
 	return c.Do("GET", uri, nil)
 }
 
-func (c *Client) POST(uri string, data interface{}) (StatusCode, []byte) {
+func (c *Client) POST(uri string, data io.Reader) (StatusCode, []byte) {
 	return c.Do("POST", uri, data)
 }
 
-func (c *Client) PUT(uri string, data interface{}) (StatusCode, []byte) {
+func (c *Client) PUT(uri string, data io.Reader) (StatusCode, []byte) {
 	return c.Do("PUT", uri, data)
 }
 
-func (c *Client) DELETE(uri string, data interface{}) (StatusCode, []byte) {
+func (c *Client) DELETE(uri string, data io.Reader) (StatusCode, []byte) {
 	return c.Do("DELETE", uri, data)
 }
 
-func (c *Client) PATCH(uri string, data interface{}) (StatusCode, []byte) {
+func (c *Client) PATCH(uri string, data io.Reader) (StatusCode, []byte) {
 	return c.Do("PATCH", uri, data)
 }
