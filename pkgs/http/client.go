@@ -84,9 +84,9 @@ func (c *Client) initRequest(method, fullURI string, data interface{}) *http.Req
 	if err != nil {
 		log.Panicln(err)
 	}
-	if _, ok := data.(bytes.Buffer); ok {
+	if _, ok := data.(*bytes.Buffer); ok {
 		request.Header.Add("Content-Type", "application/json; charset=utf-8")
-	} else if _, ok := data.(strings.Reader); ok {
+	} else if _, ok := data.(*strings.Reader); ok {
 		request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	}
 	if c.userAgent != "" {
