@@ -34,12 +34,6 @@ func NewHttpClient(baseURL string) *Client {
 	return httpClient
 }
 
-func readerIsEmpty(r io.Reader) bool {
-	checkDataContent := make([]byte, 1)
-	n, err := r.Read(checkDataContent)
-	return n == 0 && err == io.EOF
-}
-
 func (c *Client) Initialize() *Client {
 	c.appendHeader = http.Header{}
 	return c
@@ -86,7 +80,7 @@ func (c *Client) initRequest(method, fullURI string, data io.Reader) *http.Reque
 	if err != nil {
 		log.Panicln(err)
 	}
-	if !readerIsEmpty(data) {
+	if data != nil {
 		if _, ok := data.(*bytes.Buffer); ok {
 			request.Header.Add("Content-Type", "application/json; charset=utf-8")
 		} else if _, ok := data.(*strings.Reader); ok {

@@ -4,7 +4,11 @@
 
 package http
 
-import "testing"
+import (
+	"bytes"
+	"encoding/json"
+	"testing"
+)
 
 const testEndPoint = "https://reqbin.com"
 
@@ -26,9 +30,35 @@ func Test_HttpPost(t *testing.T) {
 	}
 }
 
+func Test_HttpPostWithBody(t *testing.T) {
+	client := NewHttpClient(testEndPoint)
+	data, err := json.Marshal(map[string]string{"method": "post", "from": "test@butterfly"})
+	if err != nil {
+		t.Error(err)
+	}
+	if status, response := client.POST("/echo/post/json", bytes.NewBuffer(data)); status == 200 {
+		t.Logf("Success: %s", response)
+	} else {
+		t.Errorf("Failed: [%d] %s", status, response)
+	}
+}
+
 func Test_HttpPut(t *testing.T) {
 	client := NewHttpClient(testEndPoint)
 	if status, response := client.PUT("/echo/put/json", nil); status == 200 {
+		t.Logf("Success: %s", response)
+	} else {
+		t.Errorf("Failed: [%d] %s", status, response)
+	}
+}
+
+func Test_HttpPutWithBody(t *testing.T) {
+	client := NewHttpClient(testEndPoint)
+	data, err := json.Marshal(map[string]string{"method": "put", "from": "test@butterfly"})
+	if err != nil {
+		t.Error(err)
+	}
+	if status, response := client.PUT("/echo/put/json", bytes.NewBuffer(data)); status == 200 {
 		t.Logf("Success: %s", response)
 	} else {
 		t.Errorf("Failed: [%d] %s", status, response)
