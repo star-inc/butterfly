@@ -1,6 +1,6 @@
 # Butterfly
 
-![Version](https://img.shields.io/badge/v1-OpenSource-3300AA.svg) ![License](https://img.shields.io/badge/license-MPL--2.0-FF6600.svg) ![Platform](https://img.shields.io/badge/base_on-StarStart!-11BAFF.svg) [![Code-Inspector_Score](https://www.code-inspector.com/project/5659/score/svg) ![Code-Inspector_Score](https://www.code-inspector.com/project/5659/status/svg)](https://frontend.code-inspector.com/public/project/5659/butterfly/dashboard)
+![Version](https://img.shields.io/badge/v2-OpenSource-FF00AA.svg) ![License](https://img.shields.io/badge/license-MPL--2.0-FF6600.svg) ![Platform](https://img.shields.io/badge/base_on-StarStart!-11BAFF.svg) [![Code-Inspector_Score](https://www.code-inspector.com/project/5659/score/svg) ![Code-Inspector_Score](https://www.code-inspector.com/project/5659/status/svg)](https://frontend.code-inspector.com/public/project/5659/butterfly/dashboard)
 
 > [[Violet](https://github.com/star-inc/violet)] + [[Butterfly](https://github.com/star-inc/butterfly)] = {[StarStart!](https://start.starinc.xyz)}
 
@@ -27,7 +27,7 @@ and move it to the directory where you want to execute `butterfly` command.
 
 The `<URI>` is a variable, please fill in the URL you hope to fetch the website at first time.
 
-It will be add into a list that the butterfly will fetch it.
+It will be added into a list that the butterfly will fetch it.
 
 ### Show the website list
 
@@ -52,11 +52,11 @@ The `<URI>` is the variable that the website URL you want to remove from the lis
 
 The butterfly will fly to fetch the websites in the list.
 
-## Developmet Environment
+## Development Environment
 
 ### Requirement
 
-Butterfly requires [GoLang](https://golang.org/dl) >= 1.13
+Butterfly requires [GoLang](https://golang.org/dl) >= 1.17
 
 Please check your `go version` or install the latest version.
 
